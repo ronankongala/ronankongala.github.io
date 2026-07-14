@@ -124,6 +124,12 @@ const experience = [
     desc: "Ran lab sessions and graded 200+ assignments for 61 graduate students in Cybersecurity Threats and Defenses, resolving 150+ Piazza queries within a 24-hour SLA and cutting lab completion time by 30%.",
   },
   {
+    date: "2025",
+    role: "First author, IEEE ICAISS",
+    org: "Fake job posting detection research",
+    desc: "Published an ensemble ML approach (Random Forest, Gradient Boosting, XGBoost, AdaBoost with SMOTE) reaching 98% accuracy across 9,000+ postings.",
+  },
+  {
     date: "Aug 2024 &ndash; Oct 2024",
     role: "Cybersecurity Intern",
     org: "NIELIT Virtual Academy, Ministry of Electronics and IT",
@@ -140,12 +146,6 @@ const experience = [
     role: "Data Science Analyst Intern",
     org: "Rejolt Edtech Pvt Ltd &middot; Hyderabad, India",
     desc: "Built and automated data extraction pipelines with Python (NumPy, Pandas, scikit-learn) to streamline client reporting workflows.",
-  },
-  {
-    date: "2025",
-    role: "First author, IEEE ICAISS",
-    org: "Fake job posting detection research",
-    desc: "Published an ensemble ML approach (Random Forest, Gradient Boosting, XGBoost, AdaBoost with SMOTE) reaching 98% accuracy across 9,000+ postings.",
   },
 ];
 
