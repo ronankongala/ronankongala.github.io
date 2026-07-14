@@ -344,7 +344,7 @@ function initReveal() {
 
 // ===== Greeter =====
 
-const greeting = "Hey, I'm Ronan. This log covers 11 security builds, from cloud honeypots to GRC audits. Have a look around.";
+const greeting = "Hey, I'm Ronan. This log covers 12 security builds, from cloud honeypots to an MCP bridge. Have a look around.";
 
 function typeSpeech(text, el, speed = 22) {
   el.textContent = "";
