@@ -664,7 +664,7 @@ function initIntro() {
   window.addEventListener("wheel", dismiss, { once: true, passive: true });
   window.addEventListener("touchstart", dismiss, { once: true, passive: true });
 
-  const totalTime = 220 * bootLines.length + 900;
+  const totalTime = 5000;
   setTimeout(dismiss, totalTime);
 }
 
