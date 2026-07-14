@@ -621,7 +621,7 @@ function initIntro() {
   }
 
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const alreadySeen = sessionStorage.getItem("introSeen") === "1";
+  const alreadySeen = false;
 
   if (prefersReduced || alreadySeen) {
     overlay.remove();
