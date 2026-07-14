@@ -410,18 +410,23 @@ function playAvatarVideo() {
   } catch (e) {}
 }
 
-function initGreeter() {
+function startGreetingSpeech() {
   const speechEl = document.getElementById("speechText");
+  if (!speechEl) return;
+  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  typeSpeech(greeting, speechEl, prefersReduced ? 0 : 22);
+}
+
+function initGreeter() {
   const avatarBtn = document.getElementById("avatarBtn");
   const contactPill = document.querySelector(".contact-pill");
 
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  typeSpeech(greeting, speechEl, prefersReduced ? 0 : 22);
 
   avatarBtn.addEventListener("click", (e) => {
     if (e.target.closest(".contact-pill")) return;
     playAvatarVideo();
-    typeSpeech(greeting, speechEl, prefersReduced ? 0 : 22);
+    startGreetingSpeech();
   });
 
   if (contactPill) {
@@ -685,6 +690,7 @@ function initHeroIntro() {
       setTimeout(() => el.classList.add("in"), i * 90);
     });
     playAvatarVideo();
+    startGreetingSpeech();
   }
 
   if (prefersReduced) {
@@ -692,6 +698,7 @@ function initHeroIntro() {
     if (caretEl) caretEl.classList.add("done");
     stages.forEach(el => el.classList.add("in"));
     playAvatarVideo();
+    startGreetingSpeech();
     return;
   }
 
