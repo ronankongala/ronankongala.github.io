@@ -614,7 +614,16 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(circle, rgba(91,141,239,0.18), transparent 70%);
   pointer-events: none;
 }
-.avatar-svg-lg { width: 100%; height: auto; position: relative; z-index: 1; }
+.avatar-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  position: relative;
+  z-index: 1;
+  display: block;
+  background: #0C1016;
+}
 
 .laptop-base {
   height: 12px;
@@ -635,19 +644,6 @@ a { color: inherit; text-decoration: none; }
   border-radius: 0 0 6px 6px;
 }
 
-.wave-hand-lg {
-  transform-origin: 160px 96px;
-  animation: wave 1.6s ease-in-out 1;
-}
-@keyframes wave {
-  0% { transform: rotate(0deg); }
-  15% { transform: rotate(-18deg); }
-  30% { transform: rotate(14deg); }
-  45% { transform: rotate(-18deg); }
-  60% { transform: rotate(14deg); }
-  75% { transform: rotate(-8deg); }
-  100% { transform: rotate(0deg); }
-}
 .caret {
   display: inline-block;
   color: var(--accent-signal);
@@ -656,7 +652,6 @@ a { color: inherit; text-decoration: none; }
 @keyframes caretBlink { 50% { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .wave-hand-lg { animation: none; }
   .caret { animation: none; }
 }
 

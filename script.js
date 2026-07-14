@@ -400,10 +400,19 @@ function typeSpeech(text, el, speed = 22) {
   tick();
 }
 
+function playAvatarVideo() {
+  const video = document.getElementById("avatarVideo");
+  if (!video) return;
+  try {
+    video.currentTime = 0;
+    const playPromise = video.play();
+    if (playPromise && playPromise.catch) playPromise.catch(() => {});
+  } catch (e) {}
+}
+
 function initGreeter() {
   const speechEl = document.getElementById("speechText");
   const avatarBtn = document.getElementById("avatarBtn");
-  const waveHand = document.getElementById("waveHand");
   const contactPill = document.querySelector(".contact-pill");
 
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -411,9 +420,7 @@ function initGreeter() {
 
   avatarBtn.addEventListener("click", (e) => {
     if (e.target.closest(".contact-pill")) return;
-    waveHand.style.animation = "none";
-    void waveHand.offsetWidth;
-    waveHand.style.animation = "";
+    playAvatarVideo();
     typeSpeech(greeting, speechEl, prefersReduced ? 0 : 22);
   });
 
@@ -674,12 +681,14 @@ function initHeroIntro() {
     stages.forEach((el, i) => {
       setTimeout(() => el.classList.add("in"), i * 90);
     });
+    playAvatarVideo();
   }
 
   if (prefersReduced) {
     nameEl.textContent = fullName;
     if (caretEl) caretEl.classList.add("done");
     stages.forEach(el => el.classList.add("in"));
+    playAvatarVideo();
     return;
   }
 
