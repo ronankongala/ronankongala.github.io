@@ -660,7 +660,10 @@ function initIntro() {
   setTimeout(() => { if (skipEl) skipEl.classList.add("in"); }, 200);
 
   overlay.addEventListener("click", dismiss);
-  document.addEventListener("keydown", dismiss, { once: true });
+  document.addEventListener("keydown", (e) => {
+    e.preventDefault();
+    dismiss();
+  }, { once: true });
   window.addEventListener("wheel", dismiss, { once: true, passive: true });
   window.addEventListener("touchstart", dismiss, { once: true, passive: true });
 
