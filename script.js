@@ -387,10 +387,14 @@ function initReveal() {
 
 const greeting = "Hey, I'm Ronan. This log covers 12 security builds, from cloud honeypots to an MCP bridge. Have a look around.";
 
+let typeSpeechToken = 0;
+
 function typeSpeech(text, el, speed = 22) {
+  const myToken = ++typeSpeechToken;
   el.textContent = "";
   let i = 0;
   const tick = () => {
+    if (myToken !== typeSpeechToken) return; // a newer call has started; abandon this one
     if (i < text.length) {
       el.textContent += text.charAt(i);
       i++;
@@ -670,7 +674,10 @@ function initIntro() {
     dismiss();
   }, { once: true });
   window.addEventListener("wheel", dismiss, { once: true, passive: true });
-  window.addEventListener("touchstart", dismiss, { once: true, passive: true });
+  window.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    dismiss();
+  }, { once: true, passive: false });
 
   const totalTime = 10000;
   setTimeout(dismiss, totalTime);
