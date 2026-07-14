@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ronan Kongala — Cybersecurity Engineer</title>
+<meta name="description" content="Cybersecurity engineer building detection systems, cloud security tooling, and GRC frameworks. MS Cybersecurity, Northeastern University.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="intro-overlay" id="introOverlay" aria-hidden="true">
+  <div class="intro-box">
+    <div class="intro-lines" id="introLines"></div>
+    <div class="intro-skip">press any key, click, or scroll to skip</div>
+  </div>
+</div>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#top" class="mark">RK<span class="mark-dot">.</span></a>
+    <nav class="topnav" id="topnav">
+      <a href="#about" data-section="about">About</a>
+      <a href="#projects" data-section="projects">Projects</a>
+      <a href="#experience" data-section="experience">Experience</a>
+      <a href="#stack" data-section="stack">Stack</a>
+      <a href="#contact" data-section="contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section id="top" class="hero">
+    <div class="hero-visual-zone">
+      <canvas id="netCanvas" aria-hidden="true"></canvas>
+      <div class="hero-fade"></div>
+      <div class="hero-grid">
+        <div class="hero-inner">
+          <p class="eyebrow hero-stage" id="heroEyebrow">FIELD NOTES / OPEN CASE</p>
+          <h1 class="hero-name"><span id="heroNameType"></span><span class="hero-name-caret" id="heroNameCaret">&#9612;</span></h1>
+          <p class="hero-role hero-stage" id="heroRole">Cybersecurity engineer. I build the systems that notice things &mdash; detection pipelines, cloud honeypots, and risk scoring that turns raw signal into a decision someone can act on.</p>
+          <div class="hero-cta hero-stage" id="heroCta">
+            <a href="#projects" class="btn btn-primary">See the work</a>
+            <a href="https://github.com/ronankongala" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+            <a href="https://www.linkedin.com/in/ronan-kongala" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
+          </div>
+        </div>
+
+      <div class="laptop-showcase hero-stage" id="heroLaptop">
+        <div class="showcase-callout">
+          <span id="speechText"></span><span class="caret">&#9612;</span>
+        </div>
+        <button class="laptop" id="avatarBtn" aria-label="Replay greeting">
+          <span class="contact-pill">Contact me &rarr;</span>
+          <div class="laptop-screen">
+            <div class="screen-glow"></div>
+            <svg class="avatar-svg-lg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="headShade" cx="38%" cy="32%" r="75%">
+                  <stop offset="0%" stop-color="#233247"/>
+                  <stop offset="100%" stop-color="#141B24"/>
+                </radialGradient>
+                <linearGradient id="bodyShade" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1A222C"/>
+                  <stop offset="100%" stop-color="#0E1319"/>
+                </linearGradient>
+              </defs>
+              <path d="M30 210 Q30 150 110 150 Q190 150 190 210 Z" fill="url(#bodyShade)" stroke="var(--hairline)" stroke-width="1.5"/>
+              <circle cx="110" cy="98" r="58" fill="url(#headShade)" stroke="var(--accent-signal)" stroke-width="2"/>
+              <path d="M56 90 A54 54 0 0 1 110 44" fill="none" stroke="var(--accent-signal)" stroke-width="2" opacity="0.55"/>
+              <circle cx="92" cy="94" r="6" fill="var(--text-primary)"/>
+              <circle cx="130" cy="94" r="6" fill="var(--text-primary)"/>
+              <circle cx="94" cy="92" r="2" fill="#0A0E13"/>
+              <circle cx="132" cy="92" r="2" fill="#0A0E13"/>
+              <path d="M92 118 Q110 130 128 118" fill="none" stroke="var(--text-primary)" stroke-width="3" stroke-linecap="round"/>
+              <g id="waveHand" class="wave-hand-lg">
+                <path d="M160 96 L182 68 Q188 60 182 53 Q176 47 169 53 L154 76" fill="var(--accent-alert)" stroke="var(--accent-alert)" stroke-width="1"/>
+              </g>
+            </svg>
+          </div>
+          <div class="laptop-base"><span class="laptop-notch"></span></div>
+        </button>
+      </div>
+      </div>
+    </div>
+
+    <div class="ticker-wrap hero-stage" id="heroTicker" role="img" aria-label="Scrolling feed of anonymized detection log lines from Ronan's projects">
+      <div class="ticker-label"><span class="dot"></span> LIVE FEED &mdash; SIGNAL LOG</div>
+      <div class="ticker-track">
+        <div class="ticker-group" id="tickerA"></div>
+        <div class="ticker-group" id="tickerB" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="terminal hero-stage" id="terminal">
+      <div class="terminal-bar">
+        <span class="tdot td-red"></span><span class="tdot td-yellow"></span><span class="tdot td-green"></span>
+        <span class="terminal-title">ronan@portfolio &mdash; zsh</span>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="tline">Type <span class="thl">help</span> to see what this thing can do.</div>
+      </div>
+      <div class="terminal-input-row">
+        <span class="prompt">ronan@portfolio:~$</span>
+        <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal command input">
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="section-inner">
+      <p class="eyebrow">ABOUT</p>
+      <div class="about-grid">
+        <div class="about-lead">
+          <p>I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, currently on a full-time co-op as a Cybersecurity Engineering intern at Abbott (Exact Sciences) in Madison, Wisconsin. My work sits at the intersection of detection engineering, cloud security, and governance &mdash; I like problems where a messy stream of logs or controls has to become a clear, defensible answer.</p>
+          <p>Before this, I completed a BTech in AI &amp; Data Science, which still shapes how I approach security work: as a data problem first. Most of my projects are built to prove out a full pipeline end to end &mdash; ingest, detect, score, and report &mdash; rather than a single script or notebook.</p>
+        </div>
+        <div class="about-facts">
+          <div class="fact">
+            <span class="fact-label">Based</span>
+            <span class="fact-value">Madison, WI / Boston, MA</span>
+          </div>
+          <div class="fact">
+            <span class="fact-label">Focus</span>
+            <span class="fact-value">Detection engineering, cloud security, GRC</span>
+          </div>
+          <div class="fact">
+            <span class="fact-label">Currently</span>
+            <span class="fact-value">Cybersecurity Eng. Intern, Abbott</span>
+          </div>
+          <div class="fact">
+            <span class="fact-label">Reading</span>
+            <span class="fact-value">MITRE ATT&amp;CK, NIST CSF 2.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section">
+    <div class="section-inner">
+      <p class="eyebrow">PROJECT LOG</p>
+      <h2 class="section-title">Twelve builds, from honeypots to an MCP bridge</h2>
+      <p class="filter-hint">Filter by tag, or click a case for the full write-up.</p>
+      <div class="filter-bar" id="filterBar"></div>
+      <div class="case-grid" id="caseGrid"></div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="section">
+    <div class="section-inner">
+      <p class="eyebrow">EXPERIENCE</p>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="section">
+    <div class="section-inner">
+      <p class="eyebrow">STACK</p>
+      <h2 class="section-title">Tools I reach for</h2>
+      <div class="stack-grid" id="stackGrid"></div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education" class="section">
+    <div class="section-inner">
+      <p class="eyebrow">EDUCATION</p>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <span class="edu-dates">2025 &ndash; 2027</span>
+          <h3>MS, Cybersecurity</h3>
+          <p>Northeastern University, Khoury College of Computer Sciences &middot; GPA 3.8</p>
+        </div>
+        <div class="edu-card">
+          <span class="edu-dates">2021 &ndash; 2025</span>
+          <h3>BTech, AI &amp; Data Science</h3>
+          <p>Vardhaman College of Engineering</p>
+        </div>
+      </div>
+      <div class="cert-row">
+        <a class="tag" href="https://www.coursera.org/account/accomplishments/professional-cert/NJ06LAXOT3R4" target="_blank" rel="noopener">Google Cybersecurity Professional Certificate</a>
+        <span class="tag">CompTIA Security+ (in progress)</span>
+        <a class="tag" href="https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/ifobHAoMjQs9s6bKS/gmf3ypEXBj2wvfQWC_ifobHAoMjQs9s6bKS_4yHEByFJwhmmE2ekD_1752754071792_completion_certificate.pdf" target="_blank" rel="noopener">Deloitte Cybersecurity Job Simulation</a>
+        <a class="tag" href="https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/9PBTqmSxAf6zZTseP/E9pA6qsdbeyEkp3ti_9PBTqmSxAf6zZTseP_4yHEByFJwhmmE2ekD_1752751473837_completion_certificate.pdf" target="_blank" rel="noopener">Tata Cybersecurity Simulation</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section contact-section">
+    <div class="section-inner">
+      <p class="eyebrow">CONTACT</p>
+      <h2 class="section-title">Open to Spring 2027 security roles</h2>
+      <p class="contact-copy">SOC, threat intelligence, GRC, or vulnerability management &mdash; if there's a fit, I'd like to hear about it.</p>
+      <div class="contact-links">
+        <a href="mailto:kongalaronan@gmail.com" class="btn btn-primary">Email me</a>
+        <a href="tel:+16176025369" class="btn btn-ghost">+1 (617) 602-5369</a>
+        <a href="https://www.linkedin.com/in/ronan-kongala" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
+        <a href="https://github.com/ronankongala" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <span class="case-id" id="modalId"></span>
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <div class="case-tags" id="modalTags"></div>
+    <a href="#" target="_blank" rel="noopener" class="btn btn-primary" id="modalLink">View repository</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>&copy; 2026 Ronan Kongala</span>
+    <span class="footer-note">Built with vanilla HTML/CSS/JS &mdash; hosted on GitHub Pages</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
