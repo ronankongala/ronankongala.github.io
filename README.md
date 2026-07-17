@@ -56,4 +56,4 @@ Hosted on **GitHub Pages**, served directly from the `main` branch. Any push to 
 - **LinkedIn:** [linkedin.com/in/ronan-kongala](https://www.linkedin.com/in/ronan-kongala)
 - **GitHub:** [github.com/ronankongala](https://github.com/ronankongala)
 
-Open to Spring 2027 opportunities in SOC/detection engineering, GRC, and vulnerability management.
+Open to Summer 2027 opportunities in SOC/detection engineering, GRC, and vulnerability management.
