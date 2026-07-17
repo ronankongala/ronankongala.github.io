@@ -108,6 +108,14 @@ const projects = [
     date: "2025 \u2013 present",
     link: "https://github.com/ronanlucky/kali-ssh-mcp",
   },
+  {
+    id: "CASE-13",
+    title: "NIST 800-171 / CMMC Compliance Baseline Lab",
+    tags: ["Active Directory", "Microsoft Intune", "Entra ID", "NIST 800-171", "CMMC"],
+    desc: "Built a hands-on lab simulating the environment a small defense contractor would run: Windows Server 2022 Active Directory with GPO-enforced password and lockout policies, Microsoft Intune device compliance, Entra ID Conditional Access in report-only mode, and Windows Defender Firewall rules restricting SMB and blocking outbound Telnet. Mapped every control to NIST 800-171 requirements in a documented System Security Plan and CMMC Level 2 self-assessment scorecard, with two real gaps (FIPS-validated cryptography, periodic vulnerability scanning) transparently flagged as next steps rather than hidden.",
+    date: "Jul 2026",
+    link: "https://github.com/ronankongala/nist-cmmc-compliance-lab",
+  },
 ];
 
 const experience = [
@@ -385,7 +393,7 @@ function initReveal() {
 
 // ===== Greeter =====
 
-const greeting = "Hey, I'm Ronan. This log covers 12 security builds, from cloud honeypots to an MCP bridge. Have a look around.";
+const greeting = "Hey, I'm Ronan. This log covers 13 security builds, from cloud honeypots to a CMMC baseline. Have a look around.";
 
 let typeSpeechToken = 0;
 
@@ -452,10 +460,10 @@ function tprint(body, text, cls) {
 }
 
 const terminalCommands = {
-  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-12]</span>, <span class="thl">clear</span>`,
+  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-13]</span>, <span class="thl">clear</span>`,
   about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). Cybersecurity Intern (AI/ML) @ Abbott. Focused on detection engineering, cloud security, and GRC.",
-  whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Spring 2027 roles",
-  projects: () => "12 cases logged. Type <span class=\"thl\">open [1-12]</span> for a case, or scroll to Project Log.",
+  whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer 2027 roles",
+  projects: () => "13 cases logged. Type <span class=\"thl\">open [1-13]</span> for a case, or scroll to Project Log.",
   experience: () => "Abbott (Exact Sciences), Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
   stack: () => "Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
@@ -479,7 +487,7 @@ function runCommand(raw, body) {
       openModal(projects[idx]);
       tprint(body, `Opening ${projects[idx].id}: ${projects[idx].title}...`);
     } else {
-      tprint(body, "No case with that number. Try open 1 through open 12.", "terr");
+      tprint(body, "No case with that number. Try open 1 through open 13.", "terr");
     }
     return;
   }
@@ -506,7 +514,7 @@ function initTerminal() {
     const target = e.target.closest(".thl");
     if (!target) return;
     const cmd = target.textContent.trim();
-    if (cmd === "open [1-12]") {
+    if (cmd === "open [1-13]") {
       runCommand("open 1", body);
     } else {
       runCommand(cmd, body);
