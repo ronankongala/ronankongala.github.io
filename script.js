@@ -116,6 +116,14 @@ const projects = [
     date: "Jul 2026",
     link: "https://github.com/ronankongala/nist-cmmc-compliance-lab",
   },
+  {
+    id: "CASE-14",
+    title: "Access-Governed RAG Console (LLM Access Control)",
+    tags: ["RAG", "LLM Security", "Entra ID", "RBAC", "Flask", "Azure"],
+    desc: "Built a retrieval-augmented AI assistant that enforces role-based access control at the retrieval layer, so a restricted document is excluded from an unauthorized user's candidate set before the model ever sees it, rather than trusting the model to keep a secret. Wired real Microsoft Entra ID (OAuth2) sign-in with app-role claims mapped to backend RBAC, added a prompt-injection scanner validated by a 10-case attack battery (10/10 resisted), and logged every access decision to an audit trail. Deployed to Azure App Service, with a README section documenting the honest gaps a production version would still need.",
+    date: "Jul 2026",
+    link: "https://github.com/ronankongala/Access-governed-rag-console",
+  },
 ];
 
 const experience = [
@@ -460,10 +468,10 @@ function tprint(body, text, cls) {
 }
 
 const terminalCommands = {
-  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-13]</span>, <span class="thl">clear</span>`,
+  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-14]</span>, <span class="thl">clear</span>`,
   about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). Cybersecurity Intern (AI/ML) @ Abbott. Focused on detection engineering, cloud security, and GRC.",
   whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer 2027 roles",
-  projects: () => "13 cases logged. Type <span class=\"thl\">open [1-13]</span> for a case, or scroll to Project Log.",
+  projects: () => "14 cases logged. Type <span class=\"thl\">open [1-14]</span> for a case, or scroll to Project Log.",
   experience: () => "Abbott (Exact Sciences), Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
   stack: () => "Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
@@ -514,7 +522,7 @@ function initTerminal() {
     const target = e.target.closest(".thl");
     if (!target) return;
     const cmd = target.textContent.trim();
-    if (cmd === "open [1-13]") {
+    if (cmd === "open [1-14]") {
       runCommand("open 1", body);
     } else {
       runCommand(cmd, body);
@@ -650,7 +658,7 @@ function initIntro() {
   const skipEl = document.querySelector(".intro-skip");
   const bootLines = [
     { text: "$ initiating portfolio.sys", cls: "icmd" },
-    { text: "[OK] loading 12 case files", cls: "iok" },
+    { text: "[OK] loading 14 case files", cls: "iok" },
     { text: "[OK] establishing signal", cls: "iok" },
     { text: "[OK] access granted <span class=\"isignal\">&mdash; welcome</span>", cls: "iok" },
   ];
