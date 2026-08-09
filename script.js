@@ -62,7 +62,7 @@ const projects = [
     tags: ["In progress", "LLM", "Control mapping"],
     desc: "An in-progress assistant for mapping controls across overlapping frameworks, NIST, PCI DSS, and GDPR, and flagging coverage gaps automatically.",
     date: "In progress",
-    link: "https://github.com/ronanlucky",
+    link: "https://github.com/ronankongala",
   },
   {
     id: "CASE-09",
