@@ -22,7 +22,7 @@ const projects = [
     tags: ["Semgrep", "Checkov", "Trivy", "OWASP ZAP", "Vault", "Okta", "Terraform", "GitHub Actions", "PCI-DSS"],
     desc: "Wrapped OWASP WebGoat (a deliberately vulnerable Java app) with a 3-gate CI/CD security pipeline: Semgrep SAST surfaced 66 findings across 1,002 files, Checkov flagged 3 Dockerfile misconfigurations with Prisma Cloud policy IDs, and Trivy identified 71 CVEs in the container image. OWASP ZAP active scan (961 requests) found 8 vulnerability categories including missing CSRF protections. Migrated app credentials from hardcoded config into HashiCorp Vault's KV engine with secret rotation demo (v1 → v2). Configured Okta OIDC SSO with MFA enforcement via Okta Verify. Mapped the full environment against 16 PCI-DSS 4.0 requirements with an accepted risk register.",
     date: "Aug 2026",
-    link: "https://github.com/ronankongala/WebGoat",
+    link: "https://github.com/ronankongala/appsec-pipeline-lab",
   },
   {
     id: "CASE-14",
