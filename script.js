@@ -46,7 +46,7 @@ const projects = [
     tags: ["MCP", "Kali Linux", "SSH", "Open Source"],
     desc: "A bridge between Kali Linux and the Model Context Protocol over SSH, letting an AI assistant interact directly with a Kali environment for security research and pen-testing workflows.",
     date: "2025 \u2013 present",
-    link: "https://github.com/ronanlucky/kali-ssh-mcp",
+    link: "https://github.com/ronankongala/kali-ssh-mcp",
   },
   {
     id: "CASE-11",
@@ -70,7 +70,7 @@ const projects = [
     tags: ["Ensemble ML", "SMOTE", "Research"],
     desc: "First-author research using an ensemble of Random Forest, Gradient Boosting, XGBoost, and AdaBoost with SMOTE, reaching 98% accuracy across 9,000+ job postings and a 22% false positive reduction.",
     date: "Jun 2024 \u2013 Feb 2025",
-    link: "https://github.com/ronanlucky/Fake-Job-Posting-Detection",
+    link: "https://github.com/ronankongala/Fake-Job-Posting-Detection",
   },
   {
     id: "CASE-08",
@@ -78,7 +78,7 @@ const projects = [
     tags: ["Claude", "Microsoft Sentinel", "KQL"],
     desc: "Built an LLM-driven SOC analyst that queries Microsoft Sentinel via KQL across Azure Log Analytics, triaging alerts and drafting incident summaries for human review.",
     date: "Apr 2026",
-    link: "https://github.com/ronanlucky/agentic-soc-sentinel",
+    link: "https://github.com/ronankongala/agentic-soc-sentinel",
   },
   {
     id: "CASE-07",
@@ -86,7 +86,7 @@ const projects = [
     tags: ["SOC 2", "NIST", "Risk Register"],
     desc: "Ran a mock SOC 2 Type I audit assessing 14 controls end to end, producing 6 remediation recommendations backed by a documented risk register and audit evidence trail.",
     date: "Apr 2026",
-    link: "https://github.com/ronanlucky/SOC2-Audit-Lab",
+    link: "https://github.com/ronankongala/SOC2-Audit-Lab",
   },
   {
     id: "CASE-06",
@@ -94,7 +94,7 @@ const projects = [
     tags: ["Splunk", "SIEM", "Automation"],
     desc: "Deployed a Splunk SIEM lab monitoring 1,000+ daily security events, automating 15 incident response playbooks and cutting mean time to detect from 45 to 12 minutes, a 73% improvement.",
     date: "Aug \u2013 Oct 2025",
-    link: "https://github.com/ronanlucky/SOC-Automation-Lab",
+    link: "https://github.com/ronankongala/SOC-Automation-Lab",
   },
   {
     id: "CASE-05",
