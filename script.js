@@ -21,18 +21,10 @@ const tickerLines = [
 
 const projects = [
   {
-    id: "CASE-17",
-    title: "Dynamic Analysis + Memory Forensics Lab",
-    tags: ["CAPE Sandbox", "Any.run", "winpmem", "Volatility 3", "MITRE ATT&CK", "Malware Analysis"],
-    desc: "Detonated a real AgentTesla credential stealer in the Any.run sandbox on Windows 10 — confirmed Stealc/Vidar behavior with 87 IOCs: WinRAR extracting Setup.exe, Launcher.exe flagged for cloud data stealing, 32 dropped files targeting Chrome/Edge User Data credential stores, 83 DNS requests, 3,414 registry keys accessed, 10 MITRE ATT&CK techniques mapped. Installed CAPE Sandbox v2 on REMnux (Ubuntu 24.04). Acquired a live 7GB memory image from FlareVM using winpmem v4.0-rc1, transferred to REMnux, and analyzed with Volatility 3 Framework 2.28.2 — windows.malfind detected PAGE_EXECUTE_READWRITE code injection in SearchApp.exe (PID 6656) and powershell.exe (PID 7848).",
-    date: "Aug 2026",
-    link: "https://github.com/ronankongala/malware-analysis-lab",
-  },
-  {
     id: "CASE-16",
-    title: "Static Malware Analysis Lab — AgentTesla",
-    tags: ["PEStudio", "CAPA", "Ghidra", "YARA", "Reverse Engineering", "Malware Analysis"],
-    desc: "Reverse engineered a real AgentTesla credential stealer on an isolated FlareVM + REMnux lab (VMnet2, no internet). PEStudio identified 5 imports, entropy 6.454, Czech language resources, and a fraudulent DigiCert certificate chain (serial 40:A2:95:B6). CAPA mapped T1027 (XOR x16), T1129 (dynamic API resolution via PE export parsing), and T1497 anti-sandbox process detection. Ghidra confirmed a MurmurHash API hashing function at FUN_1400015a0 with seed 0xa7e8bf08 at offset 0x9A1, UNRECOVERED_JUMPTABLE anti-disassembly in the entry function, and NOP sled padding throughout .text. Wrote 3 custom YARA rules from extracted indicators — imphash, cert serial, MurmurHash seed bytes, structural heuristics — all matched the sample with zero false positives against System32.",
+    title: "Malware Analysis Lab: AgentTesla Static, Dynamic + Memory Forensics",
+    tags: ["PEStudio", "CAPA", "Ghidra", "YARA", "CAPE Sandbox", "Any.run", "Volatility 3", "Malware Analysis"],
+    desc: "End-to-end malware analysis of a real AgentTesla credential stealer across 6 phases on an isolated FlareVM + REMnux lab. Static: PEStudio found 5 imports and entropy 6.454; CAPA mapped T1027 XOR x16 and T1497 anti-sandbox evasion; Ghidra confirmed MurmurHash API hashing at FUN_1400015a0, seed 0xa7e8bf08. Wrote 3 YARA rules from extracted indicators with zero false positives against System32. Dynamic: Any.run sandbox confirmed Stealc/Vidar stealer behavior, 87 IOCs, 32 dropped files targeting Chrome/Edge credential stores, 11 MITRE ATT&CK techniques. Memory: winpmem v4.0-rc1 acquired a 7GB live dump; Volatility 3 windows.malfind detected PAGE_EXECUTE_READWRITE code injection in SearchApp.exe (PID 6656) and powershell.exe (PID 7848).",
     date: "Aug 2026",
     link: "https://github.com/ronankongala/malware-analysis-lab",
   },
@@ -441,7 +433,7 @@ function initReveal() {
 
 // ===== Greeter =====
 
-const greeting = "Hey, I'm Ronan. This log covers 17 security builds, from cloud honeypots to malware forensics. Have a look around.";
+const greeting = "Hey, I'm Ronan. This log covers 16 security builds, from cloud honeypots to malware forensics. Have a look around.";
 
 let typeSpeechToken = 0;
 
@@ -508,10 +500,10 @@ function tprint(body, text, cls) {
 }
 
 const terminalCommands = {
-  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-17]</span>, <span class="thl">clear</span>`,
+  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-16]</span>, <span class="thl">clear</span>`,
   about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). Cybersecurity Intern (AI/ML) @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
   whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer 2027 roles",
-  projects: () => "17 cases logged. Type <span class=\"thl\">open [1-17]</span> for a case, or scroll to Project Log.",
+  projects: () => "16 cases logged. Type <span class=\"thl\">open [1-16]</span> for a case, or scroll to Project Log.",
   experience: () => "Abbott (Exact Sciences), Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
   stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
@@ -535,7 +527,7 @@ function runCommand(raw, body) {
       openModal(projects[idx]);
       tprint(body, `Opening ${projects[idx].id}: ${projects[idx].title}...`);
     } else {
-      tprint(body, "No case with that number. Try open 1 through open 17.", "terr");
+      tprint(body, "No case with that number. Try open 1 through open 16.", "terr");
     }
     return;
   }
@@ -562,7 +554,7 @@ function initTerminal() {
     const target = e.target.closest(".thl");
     if (!target) return;
     const cmd = target.textContent.trim();
-    if (cmd === "open [1-17]") {
+    if (cmd === "open [1-16]") {
       runCommand("open 1", body);
     } else {
       runCommand(cmd, body);
@@ -698,7 +690,7 @@ function initIntro() {
   const skipEl = document.querySelector(".intro-skip");
   const bootLines = [
     { text: "$ initiating portfolio.sys", cls: "icmd" },
-    { text: "[OK] loading 17 case files", cls: "iok" },
+    { text: "[OK] loading 16 case files", cls: "iok" },
     { text: "[OK] establishing signal", cls: "iok" },
     { text: "[OK] access granted <span class=\"isignal\">&mdash; welcome</span>", cls: "iok" },
   ];
