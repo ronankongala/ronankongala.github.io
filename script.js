@@ -17,9 +17,19 @@ const tickerLines = [
   { text: "[VOLATILITY] PAGE_EXECUTE_READWRITE region detected in SearchApp.exe PID 6656 — injection confirmed", sev: "high" },
   { text: "[ANY.RUN] 87 IOCs generated — 32 dropped files targeting Chrome/Edge credential stores", sev: "high" },
   { text: "[GHIDRA] MurmurHash API hashing at FUN_1400015a0 — seed 0xa7e8bf08 confirmed at offset 0x9A1", sev: "ok" },
+  { text: "[RITA] 85.239.53.219 beacon score 0.504 — rare_signature:SSLoad/1.1 — mean interval 477s, 11 connections", sev: "high" },
+  { text: "[ZEEK] 17 structured logs generated — conn.log, dns.log, ssl.log, kerberos.log, ldap.log confirmed", sev: "ok" },
 ];
 
 const projects = [
+  {
+    id: "CASE-18",
+    title: "Zeek Network Forensics + Beacon Detection",
+    tags: ["Zeek", "RITA", "Jupyter", "Beacon Detection", "Network Forensics", "Cobalt Strike"],
+    desc: "End-to-end network forensics lab detecting SSLoad and Cobalt Strike C2 beaconing from a real malware PCAP. Ran Zeek 8.2.1 against a 6.4MB PCAP to generate 17 structured logs including conn.log, dns.log, ssl.log, kerberos.log, and ldap.log. RITA v5.1.2 scored all external connections for beacon regularity, auto-tagging 85.239.53.219 with rare_signature:SSLoad/1.1 (beacon score 0.504, 11 connections, 5,087s total duration, mean interval 477 seconds). Built 3 Jupyter threat hunting notebooks: conn.log duration analysis, DNS query profiling, and beacon interval visualization. Mapped findings to 6 MITRE ATT&CK techniques (T1071, T1071.004, T1008, T1095, T1557, T1018) with a full IOC table and 2 Sigma detection rules in the investigation report PDF.",
+    date: "Aug 2026",
+    link: "https://github.com/ronankongala/zeek-network-forensics-lab",
+  },
   {
     id: "CASE-16",
     title: "Malware Analysis Lab: AgentTesla Static, Dynamic + Memory Forensics",
@@ -209,6 +219,15 @@ const stack = [
     ],
   },
   {
+    group: "Network Forensics",
+    items: [
+      { name: "Zeek", level: 80 },
+      { name: "RITA", level: 78 },
+      { name: "Wireshark", level: 85 },
+      { name: "Jupyter / pandas", level: 82 },
+    ],
+  },
+  {
     group: "Cloud & Infra",
     items: [
       { name: "AWS (Lambda, CloudTrail, S3)", level: 84 },
@@ -221,9 +240,9 @@ const stack = [
     group: "Recon & Offense",
     items: [
       { name: "Kali Linux", level: 82 },
-      { name: "Wireshark", level: 85 },
       { name: "Shodan / Censys", level: 75 },
       { name: "SpiderFoot", level: 70 },
+      { name: "Nmap", level: 80 },
     ],
   },
   {
@@ -433,7 +452,7 @@ function initReveal() {
 
 // ===== Greeter =====
 
-const greeting = "Hey, I'm Ronan. This log covers 16 security builds, from cloud honeypots to malware forensics. Have a look around.";
+const greeting = "Hey, I'm Ronan. This log covers 17 security builds, from cloud honeypots to malware forensics. Have a look around.";
 
 let typeSpeechToken = 0;
 
@@ -500,12 +519,12 @@ function tprint(body, text, cls) {
 }
 
 const terminalCommands = {
-  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-16]</span>, <span class="thl">clear</span>`,
+  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-17]</span>, <span class="thl">clear</span>`,
   about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). Cybersecurity Intern (AI/ML) @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
   whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer 2027 roles",
-  projects: () => "16 cases logged. Type <span class=\"thl\">open [1-16]</span> for a case, or scroll to Project Log.",
+  projects: () => "17 cases logged. Type <span class=\"thl\">open [1-17]</span> for a case, or scroll to Project Log.",
   experience: () => "Abbott (Exact Sciences), Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
-  stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
+  stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Zeek, RITA, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
   sudo: () => "Nice try. Access denied: this terminal only reads public data.",
 };
@@ -527,7 +546,7 @@ function runCommand(raw, body) {
       openModal(projects[idx]);
       tprint(body, `Opening ${projects[idx].id}: ${projects[idx].title}...`);
     } else {
-      tprint(body, "No case with that number. Try open 1 through open 16.", "terr");
+      tprint(body, "No case with that number. Try open 1 through open 17.", "terr");
     }
     return;
   }
@@ -554,7 +573,7 @@ function initTerminal() {
     const target = e.target.closest(".thl");
     if (!target) return;
     const cmd = target.textContent.trim();
-    if (cmd === "open [1-16]") {
+    if (cmd === "open [1-17]") {
       runCommand("open 1", body);
     } else {
       runCommand(cmd, body);
@@ -690,7 +709,7 @@ function initIntro() {
   const skipEl = document.querySelector(".intro-skip");
   const bootLines = [
     { text: "$ initiating portfolio.sys", cls: "icmd" },
-    { text: "[OK] loading 16 case files", cls: "iok" },
+    { text: "[OK] loading 17 case files", cls: "iok" },
     { text: "[OK] establishing signal", cls: "iok" },
     { text: "[OK] access granted <span class=\"isignal\">&mdash; welcome</span>", cls: "iok" },
   ];
