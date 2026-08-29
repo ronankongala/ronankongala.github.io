@@ -23,6 +23,14 @@ const tickerLines = [
 
 const projects = [
   {
+    id: "CASE-18",
+    title: "Zeek Beacon Detector (OCaml)",
+    tags: ["OCaml", "dune", "Zeek", "Beacon Detection", "Functional Programming", "Network Forensics"],
+    desc: "Functional rewrite of the CASE-17 beacon-scoring logic in OCaml, built with dune, comparing an imperative Python pipeline against a purely functional one solving the same detection problem. Parses a Zeek conn.log, groups connections by source IP through Map.Make(String) at O(n log k), sorts per-IP timestamps, folds consecutive inter-arrival gaps with List.fold_left, and computes population variance over those gaps to flag low-variance periodic senders as C2 beacon candidates -- the same signal RITA scores. Tuned with min_conns = 5 and a variance threshold of 5.0 seconds squared; against the bundled synthetic conn.log it isolates 10.0.0.5 at a 477.1s mean interval and variance 1.84 across 6 connections, separating it from two high-variance talkers. Results are modeled as a beacon_verdict variant (TooFewConns, HighVariance, BeaconCandidate), making an unscored IP structurally unable to reach the output printer and removing the sentinel-plus-assert guard the Python version needed.",
+    date: "Aug 2026",
+    link: "https://github.com/ronankongala/zeek-network-forensics-lab",
+  },
+  {
     id: "CASE-17",
     title: "Zeek Network Forensics + Beacon Detection",
     tags: ["Zeek", "RITA", "Jupyter", "Beacon Detection", "Network Forensics", "Cobalt Strike"],
