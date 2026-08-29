@@ -460,7 +460,7 @@ function initReveal() {
 
 // ===== Greeter =====
 
-const greeting = "Hey, I'm Ronan. This log covers 17 security builds, from cloud honeypots to malware forensics. Have a look around.";
+const greeting = "Hey, I'm Ronan. This log covers 18 security builds, from cloud honeypots to malware forensics. Have a look around.";
 
 let typeSpeechToken = 0;
 
@@ -527,10 +527,10 @@ function tprint(body, text, cls) {
 }
 
 const terminalCommands = {
-  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-17]</span>, <span class="thl">clear</span>`,
+  help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">open [1-18]</span>, <span class="thl">clear</span>`,
   about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). Cybersecurity Intern (AI/ML) @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
   whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer 2027 roles",
-  projects: () => "17 cases logged. Type <span class=\"thl\">open [1-17]</span> for a case, or scroll to Project Log.",
+  projects: () => "18 cases logged. Type <span class=\"thl\">open [1-18]</span> for a case, or scroll to Project Log.",
   experience: () => "Abbott (Exact Sciences), Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
   stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Zeek, RITA, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
@@ -554,7 +554,7 @@ function runCommand(raw, body) {
       openModal(projects[idx]);
       tprint(body, `Opening ${projects[idx].id}: ${projects[idx].title}...`);
     } else {
-      tprint(body, "No case with that number. Try open 1 through open 17.", "terr");
+      tprint(body, "No case with that number. Try open 1 through open 18.", "terr");
     }
     return;
   }
@@ -581,7 +581,7 @@ function initTerminal() {
     const target = e.target.closest(".thl");
     if (!target) return;
     const cmd = target.textContent.trim();
-    if (cmd === "open [1-17]") {
+    if (cmd === "open [1-18]") {
       runCommand("open 1", body);
     } else {
       runCommand(cmd, body);
@@ -717,7 +717,7 @@ function initIntro() {
   const skipEl = document.querySelector(".intro-skip");
   const bootLines = [
     { text: "$ initiating portfolio.sys", cls: "icmd" },
-    { text: "[OK] loading 17 case files", cls: "iok" },
+    { text: "[OK] loading 18 case files", cls: "iok" },
     { text: "[OK] establishing signal", cls: "iok" },
     { text: "[OK] access granted <span class=\"isignal\">&mdash; welcome</span>", cls: "iok" },
   ];
