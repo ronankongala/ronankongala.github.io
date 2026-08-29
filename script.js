@@ -23,6 +23,14 @@ const tickerLines = [
 
 const projects = [
   {
+    id: "CASE-19",
+    title: "Authorized Penetration Test, Metasploit Lab",
+    tags: ["Metasploit Framework", "Nmap", "Kali Linux", "Penetration Testing", "CVSS", "MITRE ATT&CK"],
+    desc: "Conducted authorized penetration tests against Metasploitable2 (self-hosted) and TryHackMe Blue, exploiting CVE-2011-2523 (vsftpd backdoor), CVE-2007-2447 (Samba RCE), and CVE-2017-0144 (EternalBlue) using Metasploit; documented 4 findings with CVSS scoring, MITRE ATT&CK mapping, and remediation recommendations in a structured pentest report.",
+    date: "Aug 2026",
+    link: "https://github.com/ronankongala/metasploit-pentest-report",
+  },
+  {
     id: "CASE-18",
     title: "Zeek Beacon Detector (OCaml)",
     tags: ["OCaml", "dune", "Zeek", "Beacon Detection", "Functional Programming", "Network Forensics"],
