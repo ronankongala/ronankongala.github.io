@@ -26,7 +26,7 @@ const projects = [
     id: "CASE-19",
     title: "Authorized Penetration Test, Metasploit Lab",
     tags: ["Metasploit Framework", "Nmap", "Kali Linux", "Penetration Testing", "CVSS", "MITRE ATT&CK"],
-    desc: "Conducted authorized penetration tests against Metasploitable2 (self-hosted) and TryHackMe Blue, exploiting CVE-2011-2523 (vsftpd backdoor), CVE-2007-2447 (Samba RCE), and CVE-2017-0144 (EternalBlue) using Metasploit; documented 4 findings with CVSS scoring, MITRE ATT&CK mapping, and remediation recommendations in a structured pentest report.",
+    desc: "Conducted an authorized penetration test against two intentionally vulnerable lab environments (Metasploitable2 self-hosted, TryHackMe Blue). Performed full reconnaissance with Nmap across all 65,535 ports, identifying vsftpd 2.3.4, Samba 3.0.20, rexec, and unpatched SMBv1. Exploited CVE-2011-2523 (vsftpd backdoor, root shell via malicious username), CVE-2007-2447 (Samba usermap_script command injection, root shell), cleartext rexec authentication service (port 512), and CVE-2017-0144 EternalBlue (SMBv1 buffer overflow, NT AUTHORITY\\SYSTEM). All 4 exploits executed using Metasploit Framework. Documented findings in a structured pentest report with CVSS v3 scoring, MITRE ATT&CK mapping (T1190, T1210, T1021), reproduction steps, business impact analysis, and remediation recommendations.",
     date: "Aug 2026",
     link: "https://github.com/ronankongala/metasploit-pentest-report",
   },
