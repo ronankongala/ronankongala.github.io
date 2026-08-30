@@ -9,16 +9,16 @@ const tickerLines = [
   { text: "[CLOUDTRAIL] 11 detection rules live across Lambda + DynamoDB", sev: "ok" },
   { text: "[ELK] 110+ events indexed, Kibana dashboard verified", sev: "ok" },
   { text: "[GRC] control mapping complete: PCI DSS 4.0, SOX 404, NIST CSF 2.0", sev: "ok" },
-  { text: "[SEMGREP] 66 findings across 1,002 files — OWASP Top 10 + security-audit rulesets", sev: "high" },
-  { text: "[TRIVY] 71 CVEs in webgoat:latest — 11 HIGH in Ubuntu 24.04 base layer", sev: "high" },
-  { text: "[ZAP] 8 alerts, 961 requests — CSRF, CSP, clickjacking, SameSite cookie gaps", sev: "high" },
-  { text: "[VAULT] secret rotation confirmed — secret/webgoat/database bumped to version 2", sev: "ok" },
-  { text: "[YARA] AgentTesla_PE_Indicators matched — imphash 4300f2f2, cert serial 40:A2:95:B6 confirmed", sev: "high" },
-  { text: "[VOLATILITY] PAGE_EXECUTE_READWRITE region detected in SearchApp.exe PID 6656 — injection confirmed", sev: "high" },
-  { text: "[ANY.RUN] 87 IOCs generated — 32 dropped files targeting Chrome/Edge credential stores", sev: "high" },
-  { text: "[GHIDRA] MurmurHash API hashing at FUN_1400015a0 — seed 0xa7e8bf08 confirmed at offset 0x9A1", sev: "ok" },
-  { text: "[RITA] 85.239.53.219 beacon score 0.504 — rare_signature:SSLoad/1.1 — mean interval 477s, 11 connections", sev: "high" },
-  { text: "[ZEEK] 17 structured logs generated — conn.log, dns.log, ssl.log, kerberos.log, ldap.log confirmed", sev: "ok" },
+  { text: "[SEMGREP] 66 findings across 1,002 files, OWASP Top 10 + security-audit rulesets", sev: "high" },
+  { text: "[TRIVY] 71 CVEs in webgoat:latest, 11 HIGH in Ubuntu 24.04 base layer", sev: "high" },
+  { text: "[ZAP] 8 alerts, 961 requests: CSRF, CSP, clickjacking, SameSite cookie gaps", sev: "high" },
+  { text: "[VAULT] secret rotation confirmed, secret/webgoat/database bumped to version 2", sev: "ok" },
+  { text: "[YARA] AgentTesla_PE_Indicators matched, imphash 4300f2f2, cert serial 40:A2:95:B6 confirmed", sev: "high" },
+  { text: "[VOLATILITY] PAGE_EXECUTE_READWRITE region detected in SearchApp.exe PID 6656, injection confirmed", sev: "high" },
+  { text: "[ANY.RUN] 87 IOCs generated, 32 dropped files targeting Chrome/Edge credential stores", sev: "high" },
+  { text: "[GHIDRA] MurmurHash API hashing at FUN_1400015a0, seed 0xa7e8bf08 confirmed at offset 0x9A1", sev: "ok" },
+  { text: "[RITA] 85.239.53.219 beacon score 0.504, rare_signature:SSLoad/1.1, mean interval 477s, 11 connections", sev: "high" },
+  { text: "[ZEEK] 17 structured logs generated: conn.log, dns.log, ssl.log, kerberos.log, ldap.log confirmed", sev: "ok" },
 ];
 
 const projects = [
@@ -182,13 +182,13 @@ const caseRange = `open [1-${caseCount}]`;
 
 const experience = [
   {
-    date: "Jun 2026 &ndash; Dec 2026",
+    date: "Jun 2026 - Dec 2026",
     role: "Cybersecurity Intern (AI/ML)",
     org: "Abbott (Exact Sciences) &middot; Madison, WI",
     desc: "Contributing to two internal platforms built with a teammate, Baseline Guardian and CrowdCheck Hive, integrating CrowdStrike, Microsoft Intune, Tanium, and ServiceNow CMDB data for endpoint compliance scoring and device inventory correlation. Collaborating on Baseline Guardian's Python/FastAPI/PostgreSQL/AWS backend and CrowdCheck Hive's correlation logic and dashboard architecture. Regular participant in cybersecurity tabletop exercises stress-testing incident response plans.",
   },
   {
-    date: "Jan 2026 &ndash; Apr 2026",
+    date: "Jan 2026 - Apr 2026",
     role: "Teaching Assistant, CY5001",
     org: "Northeastern University, Khoury College",
     desc: "Ran lab sessions and graded 200+ assignments for 61 graduate students in Cybersecurity Threats and Defenses, resolving 150+ Piazza queries within a 24-hour SLA and cutting lab completion time by 30%.",
@@ -200,19 +200,19 @@ const experience = [
     desc: "Published an ensemble ML approach (Random Forest, Gradient Boosting, XGBoost, AdaBoost with SMOTE) reaching 98% accuracy across 9,000+ postings.",
   },
   {
-    date: "Aug 2024 &ndash; Oct 2024",
+    date: "Aug 2024 - Oct 2024",
     role: "Cybersecurity Intern",
     org: "NIELIT Virtual Academy, Ministry of Electronics and IT",
     desc: "Conducted network security assessments across 3 live environments, applying threat modeling with Nmap and Docker, and used Random Forest models to detect anomalies in security data.",
   },
   {
-    date: "Feb 2024 &ndash; Apr 2024",
+    date: "Feb 2024 - Apr 2024",
     role: "Web Development Trainee",
     org: "Quizaro ExtendedEdge &middot; Remote",
     desc: "Completed an ISO 9001:2015 certified specialization covering frontend architecture and modern web technologies.",
   },
   {
-    date: "Oct 2023 &ndash; Nov 2023",
+    date: "Oct 2023 - Nov 2023",
     role: "Data Science Analyst Intern",
     org: "Rejolt Edtech Pvt Ltd &middot; Hyderabad, India",
     desc: "Built and automated data extraction pipelines with Python (NumPy, Pandas, scikit-learn) to streamline client reporting workflows.",
@@ -731,7 +731,7 @@ function initIntro() {
     { text: "$ initiating portfolio.sys", cls: "icmd" },
     { text: `[OK] loading ${caseCount} case files`, cls: "iok" },
     { text: "[OK] establishing signal", cls: "iok" },
-    { text: "[OK] access granted <span class=\"isignal\">&mdash; welcome</span>", cls: "iok" },
+    { text: "[OK] access granted<span class=\"isignal\">, welcome</span>", cls: "iok" },
   ];
 
   let dismissed = false;
