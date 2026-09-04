@@ -1,6 +1,7 @@
 // ===== Data =====
 
 const tickerLines = [
+  { text: "[GUARDDUTY] 10 findings auto-ticketed to Jira, 13 finding types mapped to MITRE ATT&CK", sev: "ok" },
   { text: "[T-POT] 66,204 attacker sessions captured across Conpot/Cowrie honeypots", sev: "high" },
   { text: "[SURICATA] 15,382 IDS alerts correlated in first 6h of deployment", sev: "high" },
   { text: "[MITRE ATT&CK] 4 techniques mapped: T1046, T1110, T1595, T1071", sev: "ok" },
@@ -22,6 +23,14 @@ const tickerLines = [
 ];
 
 const projects = [
+  {
+    id: "CASE-20",
+    title: "GuardDutySync: GuardDuty to MITRE ATT&CK to Jira Pipeline",
+    tags: ["AWS GuardDuty", "boto3", "MITRE ATT&CK", "Jira Cloud REST API", "Python", "Security Automation"],
+    desc: "Three-stage Python pipeline that turns raw AWS GuardDuty alerts into enriched, deduplicated Jira triage tickets with no manual analyst step in between. The poller authenticates through an IAM user scoped to AmazonGuardDutyReadOnlyAccess and pulls findings from the GuardDuty API with boto3, validated against 434 sample findings generated in us-east-1. The enricher resolves each finding type to a MITRE ATT&CK technique through a hand-built mapping table covering 13 GuardDuty finding types across 12 techniques, then pulls the full technique name, tactic, and description out of the MITRE enterprise-attack STIX bundle, so a ticket carries T1611 Escape to Host and privilege-escalation rather than an opaque finding string. The ticketer posts a structured issue to the Jira Cloud REST API with every enriched field, mapping the GuardDuty 0 to 10 severity float onto Jira High, Medium, and Low priority. Local state in processed_findings.json makes reruns idempotent: a verified run fetched 10 alerts and created 10 tickets with 0 errors, and an immediate second run skipped all 10 as duplicates and created none.",
+    date: "Sep 2026",
+    link: "https://github.com/ronankongala/guardduty-sync",
+  },
   {
     id: "CASE-19",
     title: "Authorized Penetration Test, Metasploit Lab",
