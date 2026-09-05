@@ -6,15 +6,15 @@ My personal cybersecurity portfolio, built from scratch with vanilla HTML, CSS, 
 
 ## About
 
-I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, currently on a co-op as a Cybersecurity Intern (AI/ML) at Abbott (Exact Sciences). This site is a running log of the security engineering work I've built, detection pipelines, cloud honeypots, GRC audits, LLM security, and a few side projects, styled like a field notebook / case log rather than a generic template.
+I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, currently on a co-op as a Cybersecurity Intern (AI/ML) at Abbott (Exact Sciences). This site is a running log of the security engineering work I've built, detection pipelines, cloud honeypots, GRC audits, LLM security, fraud detection and model fairness, and a few side projects, styled like a field notebook / case log rather than a generic template.
 
 ## Features
 
 - **Animated intro sequence** -- a short terminal-style boot log plays on load
 - **Typewriter hero** -- name types in letter by letter, synced with a short avatar video introduction
 - **Live signal-graph background** -- an animated node network rendered on canvas, no libraries
-- **Interactive terminal** -- type real commands (`help`, `projects`, `open 1-20`, `whoami`, `contact`, `clear`) to navigate the site
-- **Filterable project grid** -- 20 case studies, click any tag to filter, click a card for the full write-up in a modal
+- **Interactive terminal** -- type real commands (`help`, `projects`, `open 1-21`, `whoami`, `contact`, `clear`) to navigate the site
+- **Filterable project grid** -- 21 case studies, click any tag to filter, click a card for the full write-up in a modal
 - **Scrolling signal-log ticker** -- real stats pulled from my own projects (attacker sessions captured, IDS alerts correlated, CVSS scores, etc.)
 - **Animated skill meters**, staggered scroll reveals, smooth page transitions
 - **Fully responsive**, respects `prefers-reduced-motion`, keyboard accessible
