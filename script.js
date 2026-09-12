@@ -575,7 +575,7 @@ function tprint(body, text, cls) {
 
 const terminalCommands = {
   help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">${caseRange}</span>, <span class="thl">clear</span>`,
-  about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). AI Cybersecurity Intern @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
+  about: () => "MS Cybersecurity @ Northeastern (GPA 3.86). AI Cybersecurity Intern @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
   whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer and Fall 2027 roles",
   projects: () => `${caseCount} cases logged. Type <span class="thl">${caseRange}</span> for a case, or scroll to Project Log.`,
   experience: () => "Abbott (AI Cybersecurity Intern), Exact Sciences, Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
