@@ -169,7 +169,7 @@ const projects = [
     tags: ["Python", "boto3", "AWS S3"],
     desc: "Built a Python auditing tool using boto3 to scan AWS S3 buckets for misconfigurations, running 6 checks per bucket across public ACLs, encryption, versioning, and logging. Scanned 2 buckets, identified 3 medium-severity findings, and produced a structured JSON risk report.",
     date: "Jun 2026",
-    link: "https://github.com/ronankongala/-s3-security-auditor",
+    link: "https://github.com/ronankongala/s3-security-auditor",
   },
   {
     id: "CASE-04",
@@ -185,7 +185,7 @@ const projects = [
     tags: ["AWS Lambda", "S3", "SNS", "DynamoDB"],
     desc: "Engineered a serverless AWS threat detection pipeline using CloudTrail, Lambda (Python 3.12), S3, SNS, and DynamoDB, implementing 11 detection rules mapped to MITRE ATT&CK across Defense Evasion, Privilege Escalation, and Credential Access. Real-time IAM alerting ran at a 100% Lambda execution success rate.",
     date: "Jun 2026",
-    link: "https://github.com/ronankongala/-aws-cloudtrail-threat-detector",
+    link: "https://github.com/ronankongala/aws-cloudtrail-threat-detector",
   },
   {
     id: "CASE-02",
