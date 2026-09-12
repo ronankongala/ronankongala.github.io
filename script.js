@@ -652,75 +652,293 @@ function initScrollspy() {
   sections.forEach(s => io.observe(s));
 }
 
-// ===== Network graph background (hero) =====
+// ===== Interactive network web (hero) =====
 
 function initNetworkGraph() {
   const canvas = document.getElementById("netCanvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
-  const zone = document.querySelector(".hero-visual-zone");
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  const SIGNAL = "91, 141, 239";
+  const ALERT = "232, 162, 61";
+  const NODE = "139, 150, 165";
+
+  const LINK_DIST = 162;
+  const CURSOR_DIST = 200;
+  const PULL = 0.055;
+  const DAMP = 0.94;
+  const DRIFT = 0.25;
+
+  let w = 0, h = 0;
+
   function resize() {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.clientWidth;
+    h = canvas.clientHeight;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resize();
   window.addEventListener("resize", resize);
 
-  const COUNT = window.innerWidth < 700 ? 22 : 40;
-  const LINK_DIST = 150;
+  const COUNT = window.innerWidth < 700 ? 32 : 58;
   const nodes = Array.from({ length: COUNT }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 0.25,
-    vy: (Math.random() - 0.5) * 0.25,
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: (Math.random() - 0.5) * DRIFT,
+    vy: (Math.random() - 0.5) * DRIFT,
     pulse: Math.random() * Math.PI * 2,
     alert: Math.random() < 0.12,
+    lit: 0,
   }));
 
-  function frame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Pointer is tracked in canvas space. The canvas is pointer-events:none and sits
+  // behind the hero text, so we listen on window and project into local coords.
+  const pointer = { x: 0, y: 0, active: false };
+  const ripples = [];
 
+  function projectPointer(e) {
+    const r = canvas.getBoundingClientRect();
+    pointer.x = e.clientX - r.left;
+    pointer.y = e.clientY - r.top;
+    pointer.active =
+      pointer.x > -60 && pointer.x < w + 60 &&
+      pointer.y > -60 && pointer.y < h + 60;
+  }
+
+  function bindPointer() {
+    window.addEventListener("pointermove", projectPointer, { passive: true });
+    window.addEventListener("pointerleave", () => { pointer.active = false; }, { passive: true });
+    window.addEventListener("pointerdown", (e) => {
+      projectPointer(e);
+      if (pointer.active) ripples.push({ x: pointer.x, y: pointer.y, r: 0 });
+    }, { passive: true });
+  }
+
+  function drawStrand(ax, ay, bx, by, rgb, opacity, width) {
+    ctx.strokeStyle = "rgba(" + rgb + ", " + opacity + ")";
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+  }
+
+  function step() {
     for (const n of nodes) {
+      // Cursor tugs nearby nodes toward it, so the web stretches under the pointer.
+      if (pointer.active) {
+        const dx = pointer.x - n.x;
+        const dy = pointer.y - n.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < CURSOR_DIST && dist > 0.5) {
+          const force = (1 - dist / CURSOR_DIST) * PULL;
+          n.vx += (dx / dist) * force;
+          n.vy += (dy / dist) * force;
+          n.lit = Math.max(n.lit, 1 - dist / CURSOR_DIST);
+        }
+      }
+
+      // Ripple rings shove nodes outward as the wavefront passes through them.
+      for (const rp of ripples) {
+        const dx = n.x - rp.x;
+        const dy = n.y - rp.y;
+        const dist = Math.hypot(dx, dy);
+        const band = Math.abs(dist - rp.r);
+        if (band < 34 && dist > 0.5) {
+          const force = (1 - band / 34) * 0.5;
+          n.vx += (dx / dist) * force;
+          n.vy += (dy / dist) * force;
+          n.lit = Math.max(n.lit, 1 - band / 34);
+        }
+      }
+
+      n.vx *= DAMP;
+      n.vy *= DAMP;
+
+      // Keep a floor on drift so the web never settles into stillness.
+      const speed = Math.hypot(n.vx, n.vy);
+      if (speed < 0.06) {
+        n.vx += (Math.random() - 0.5) * 0.04;
+        n.vy += (Math.random() - 0.5) * 0.04;
+      }
+
       n.x += n.vx;
       n.y += n.vy;
-      if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
-      if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+      if (n.x < 0 || n.x > w) { n.vx *= -1; n.x = Math.min(Math.max(n.x, 0), w); }
+      if (n.y < 0 || n.y > h) { n.vy *= -1; n.y = Math.min(Math.max(n.y, 0), h); }
+
       n.pulse += 0.02;
+      n.lit *= 0.92;
     }
 
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      ripples[i].r += 7;
+      if (ripples[i].r > Math.hypot(w, h)) ripples.splice(i, 1);
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Node-to-node strands, brightened where the cursor is pulling.
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const a = nodes[i], b = nodes[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < LINK_DIST) {
-          const opacity = (1 - dist / LINK_DIST) * 0.16;
-          ctx.strokeStyle = `rgba(91, 141, 239, ${opacity})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (dist >= LINK_DIST) continue;
+        const base = (1 - dist / LINK_DIST) * 0.24;
+        const boost = Math.max(a.lit, b.lit);
+        drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.3, 1 + boost * 0.6);
       }
     }
 
-    for (const n of nodes) {
-      const r = n.alert ? 2.4 + Math.sin(n.pulse) * 1.2 : 1.8;
+    // Strands anchoring the web to the cursor itself.
+    if (pointer.active) {
+      for (const n of nodes) {
+        const dist = Math.hypot(pointer.x - n.x, pointer.y - n.y);
+        if (dist >= CURSOR_DIST) continue;
+        const t = 1 - dist / CURSOR_DIST;
+        drawStrand(pointer.x, pointer.y, n.x, n.y, SIGNAL, t * 0.42, 0.8 + t);
+      }
       ctx.beginPath();
-      ctx.arc(n.x, n.y, Math.max(r, 0.6), 0, Math.PI * 2);
-      ctx.fillStyle = n.alert
-        ? `rgba(232, 162, 61, ${0.5 + Math.sin(n.pulse) * 0.3})`
-        : "rgba(139, 150, 165, 0.5)";
+      ctx.arc(pointer.x, pointer.y, 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(" + SIGNAL + ", 0.85)";
       ctx.fill();
     }
 
-    if (!prefersReduced) requestAnimationFrame(frame);
+    for (const rp of ripples) {
+      const fade = Math.max(0, 1 - rp.r / Math.hypot(w, h));
+      ctx.strokeStyle = "rgba(" + SIGNAL + ", " + (fade * 0.22) + ")";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    for (const n of nodes) {
+      const r = n.alert ? 2.4 + Math.sin(n.pulse) * 1.2 : 1.8 + n.lit * 1.6;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, Math.max(r, 0.6), 0, Math.PI * 2);
+      ctx.fillStyle = n.alert
+        ? "rgba(" + ALERT + ", " + (0.5 + Math.sin(n.pulse) * 0.3) + ")"
+        : "rgba(" + (n.lit > 0.05 ? SIGNAL : NODE) + ", " + (0.62 + n.lit * 0.38) + ")";
+      ctx.fill();
+    }
   }
 
-  frame();
+  if (prefersReduced) {
+    draw();
+    return;
+  }
+
+  bindPointer();
+
+  // Only burn frames while the hero is actually on screen and the tab is focused.
+  let rafId = 0;
+  let onScreen = true;
+
+  function frame() {
+    step();
+    draw();
+    rafId = requestAnimationFrame(frame);
+  }
+  function start() {
+    if (!rafId && onScreen && !document.hidden) rafId = requestAnimationFrame(frame);
+  }
+  function stop() {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+  }
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries) => {
+      onScreen = entries[0].isIntersecting;
+      if (onScreen) start(); else stop();
+    }, { threshold: 0 }).observe(canvas);
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop(); else start();
+  });
+
+  start();
+}
+
+// ===== Text motion =====
+
+const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/<>*+-_";
+
+// Resolves text left to right out of noise. Keeps the final string on aria-label
+// so assistive tech never reads the intermediate garbage.
+function scrambleIn(el, speed = 1.6) {
+  const text = el.dataset.text || el.textContent;
+  el.dataset.text = text;
+  el.setAttribute("aria-label", text);
+
+  // Pin the settled height first: mid-scramble the string is shorter, and a
+  // wrapped title would otherwise collapse a line and shove the page around.
+  el.style.minHeight = el.offsetHeight + "px";
+
+  let frame = 0;
+  function tick() {
+    const settled = Math.floor(frame / speed);
+    let out = "";
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (i < settled || ch === " ") {
+        out += ch;
+      } else if (i < settled + 6) {
+        out += SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
+      }
+    }
+    el.textContent = out;
+    frame++;
+    if (settled <= text.length) requestAnimationFrame(tick);
+    else { el.textContent = text; el.style.minHeight = ""; }
+  }
+  tick();
+}
+
+// Splits a line into word spans so they can rise in sequence instead of as a block.
+function splitWords(el) {
+  if (el.dataset.split === "1") return;
+  const words = el.textContent.trim().split(/\s+/);
+  el.setAttribute("aria-label", el.textContent.trim());
+  el.textContent = "";
+  words.forEach((word, i) => {
+    const span = document.createElement("span");
+    span.className = "word";
+    span.textContent = word;
+    span.style.transitionDelay = Math.min(i * 28, 700) + "ms";
+    el.appendChild(span);
+    if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
+  });
+  el.dataset.split = "1";
+}
+
+function initTextFX() {
+  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced) return;
+
+  const role = document.getElementById("heroRole");
+  if (role) {
+    splitWords(role);
+  }
+
+  if (!("IntersectionObserver" in window)) return;
+  // Hero labels are handled by the intro sequence; observing them here would burn
+  // the scramble while the hero is still faded out.
+  const titles = Array.from(document.querySelectorAll(".section-title, .eyebrow"))
+    .filter(el => !el.closest(".hero"));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      scrambleIn(entry.target);
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.4 });
+  titles.forEach(t => io.observe(t));
 }
 
 renderTicker();
@@ -734,7 +952,9 @@ initGreeter();
 initTerminal();
 initModal();
 initScrollspy();
-initNetworkGraph();
+// Background flourishes must never block the intro from dismissing.
+try { initNetworkGraph(); } catch (e) { console.error("network web failed:", e); }
+try { initTextFX(); } catch (e) { console.error("text fx failed:", e); }
 initIntro();
 
 function initIntro() {
@@ -812,6 +1032,10 @@ function initHeroIntro() {
     stages.forEach((el, i) => {
       setTimeout(() => el.classList.add("in"), i * 90);
     });
+    const eyebrow = document.getElementById("heroEyebrow");
+    if (eyebrow) scrambleIn(eyebrow);
+    const role = document.getElementById("heroRole");
+    if (role) setTimeout(() => role.classList.add("words-in"), 220);
     playAvatarVideo();
     startGreetingSpeech();
   }
