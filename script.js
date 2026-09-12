@@ -660,26 +660,33 @@ function initNetworkGraph() {
   const ctx = canvas.getContext("2d");
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const SIGNAL = "45, 212, 191";
+  const LINE = "45, 212, 191";
+  const DOT = "94, 234, 212";
   const ALERT = "232, 162, 61";
-  const NODE = "122, 156, 172";
 
   const LINK_DIST = 132;
   const MAX_LINKS = 2;
   const CURSOR_DIST = 210;
+  const CURSOR_LINK_DIST = 190;
   const PULL = 0.075;
-  const DAMP = 0.965;
-  const DRIFT = 0.3;
-  const MIN_SPEED = 0.11;
 
-  // Zone geometry: hard pad is the line nodes may never cross, soft margin is
-  // the cushion outside it where they start curving away.
+  // Base drift is constant forever. Everything interactive lands in a separate
+  // impulse velocity that decays, so a shove fades back to the base drift
+  // instead of permanently speeding a node up.
+  const IMPULSE_DAMP = 0.92;
+  const SPEED_MIN = 0.15;
+  const SPEED_MAX = 0.35;
+
+  // One node per this many pixels of open space, measured after the content
+  // boxes are carved out, so density holds steady across viewport sizes.
+  const AREA_PER_NODE = 14000;
+  const COUNT_MIN = 30;
+  const COUNT_MAX = 120;
+
   const ZONE_PAD = 16;
   const ZONE_MARGIN = 54;
   const ZONE_PUSH = 0.1;
 
-  // Mutual repulsion at close range. Without this, everything evicted from the
-  // zones piles into the same gap and the web reads as one knot.
   const SEP_DIST = 74;
   const SEP_PUSH = 0.05;
 
@@ -722,6 +729,14 @@ function initNetworkGraph() {
     return null;
   }
 
+  function openArea() {
+    let taken = 0;
+    for (const z of zones) {
+      taken += Math.max(0, Math.min(z.w, w)) * Math.max(0, Math.min(z.h, h));
+    }
+    return Math.max(w * h - taken, w * h * 0.15);
+  }
+
   // Steer away from a zone before reaching it, along whichever axis the node is
   // shallowest on, so it slides around the box instead of stalling against it.
   function zoneSteer(n) {
@@ -733,8 +748,8 @@ function initNetworkGraph() {
       const ox = 1 - Math.abs(dx) / hx;
       const oy = 1 - Math.abs(dy) / hy;
       if (ox <= 0 || oy <= 0) continue;
-      if (ox < oy) n.vx += (dx >= 0 ? 1 : -1) * ox * ZONE_PUSH;
-      else n.vy += (dy >= 0 ? 1 : -1) * oy * ZONE_PUSH;
+      if (ox < oy) n.ivx += (dx >= 0 ? 1 : -1) * ox * ZONE_PUSH;
+      else n.ivy += (dy >= 0 ? 1 : -1) * oy * ZONE_PUSH;
     }
   }
 
@@ -747,19 +762,15 @@ function initNetworkGraph() {
     const dTop = n.y - z.y;
     const dBottom = z.y + z.h - n.y;
     const min = Math.min(dLeft, dRight, dTop, dBottom);
-    if (min === dLeft) { n.x = z.x; n.vx = -Math.abs(n.vx); }
-    else if (min === dRight) { n.x = z.x + z.w; n.vx = Math.abs(n.vx); }
-    else if (min === dTop) { n.y = z.y; n.vy = -Math.abs(n.vy); }
-    else { n.y = z.y + z.h; n.vy = Math.abs(n.vy); }
+    if (min === dLeft) { n.x = z.x; n.bvx = -Math.abs(n.bvx); n.ivx = 0; }
+    else if (min === dRight) { n.x = z.x + z.w; n.bvx = Math.abs(n.bvx); n.ivx = 0; }
+    else if (min === dTop) { n.y = z.y; n.bvy = -Math.abs(n.bvy); n.ivy = 0; }
+    else { n.y = z.y + z.h; n.bvy = Math.abs(n.bvy); n.ivy = 0; }
   }
 
   resize();
   measureZones();
-  window.addEventListener("resize", () => { resize(); measureZones(); });
 
-  const COUNT = window.innerWidth < 700 ? 26 : 46;
-
-  // Seed into open space directly so nothing has to visibly jump out on frame 1.
   function openSpot() {
     for (let i = 0; i < 60; i++) {
       const x = Math.random() * w;
@@ -769,25 +780,45 @@ function initNetworkGraph() {
     return { x: Math.random() * w, y: Math.random() * h };
   }
 
-  const nodes = Array.from({ length: COUNT }, () => {
+  function makeNode() {
     const spot = openSpot();
+    const angle = Math.random() * Math.PI * 2;
+    const speed = SPEED_MIN + Math.random() * (SPEED_MAX - SPEED_MIN);
     return {
       x: spot.x,
       y: spot.y,
-      vx: (Math.random() - 0.5) * DRIFT,
-      vy: (Math.random() - 0.5) * DRIFT,
+      bvx: Math.cos(angle) * speed,
+      bvy: Math.sin(angle) * speed,
+      ivx: 0,
+      ivy: 0,
       pulse: Math.random() * Math.PI * 2,
-      alert: Math.random() < 0.12,
+      alert: Math.random() < 0.1,
       lit: 0,
     };
-  });
+  }
+
+  function targetCount() {
+    const n = Math.round(openArea() / AREA_PER_NODE);
+    return Math.min(Math.max(n, COUNT_MIN), COUNT_MAX);
+  }
+
+  const nodes = [];
+  function syncCount() {
+    const target = targetCount();
+    while (nodes.length < target) nodes.push(makeNode());
+    if (nodes.length > target) nodes.length = target;
+    if (degree.length < nodes.length) degree = new Uint8Array(nodes.length);
+  }
+
+  let degree = new Uint8Array(COUNT_MAX);
+  const pairs = [];
+
+  syncCount();
+
+  window.addEventListener("resize", () => { resize(); measureZones(); syncCount(); });
 
   // Pointer is tracked in canvas space. The canvas is pointer-events:none and sits
   // behind the hero content, so we listen on window and project into local coords.
-  // Reused per frame so the strand pass allocates nothing at 60fps.
-  const degree = new Uint8Array(COUNT);
-  const pairs = [];
-
   const pointer = { x: 0, y: 0, active: false };
   const ripples = [];
 
@@ -811,8 +842,8 @@ function initNetworkGraph() {
     }, { passive: true });
   }
 
-  function drawStrand(ax, ay, bx, by, rgb, opacity, width) {
-    ctx.strokeStyle = "rgba(" + rgb + ", " + opacity + ")";
+  function drawStrand(ax, ay, bx, by, opacity, width) {
+    ctx.strokeStyle = "rgba(" + LINE + ", " + opacity + ")";
     ctx.lineWidth = width;
     ctx.beginPath();
     ctx.moveTo(ax, ay);
@@ -829,7 +860,8 @@ function initNetworkGraph() {
   }
 
   function step() {
-    // Spread pass: push apart anything that has bunched up.
+    // Spread pass: push apart anything that has bunched up. This is what keeps
+    // cursor attraction from collapsing the whole field into the pointer.
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const a = nodes[i], b = nodes[j];
@@ -839,23 +871,23 @@ function initNetworkGraph() {
         const d = Math.sqrt(d2);
         const f = (1 - d / SEP_DIST) * SEP_PUSH;
         const ux = dx / d, uy = dy / d;
-        a.vx += ux * f; a.vy += uy * f;
-        b.vx -= ux * f; b.vy -= uy * f;
+        a.ivx += ux * f; a.ivy += uy * f;
+        b.ivx -= ux * f; b.ivy -= uy * f;
       }
     }
 
     for (const n of nodes) {
       zoneSteer(n);
 
-      // Cursor tugs nearby nodes toward it, so the web stretches under the pointer.
+      // Cursor tugs nearby nodes toward it, so the web leans your way.
       if (pointer.active) {
         const dx = pointer.x - n.x;
         const dy = pointer.y - n.y;
         const dist = Math.hypot(dx, dy);
         if (dist < CURSOR_DIST && dist > 0.5) {
           const force = (1 - dist / CURSOR_DIST) * PULL;
-          n.vx += (dx / dist) * force;
-          n.vy += (dy / dist) * force;
+          n.ivx += (dx / dist) * force;
+          n.ivy += (dy / dist) * force;
           n.lit = Math.max(n.lit, 1 - dist / CURSOR_DIST);
         }
       }
@@ -868,27 +900,25 @@ function initNetworkGraph() {
         const band = Math.abs(dist - rp.r);
         if (band < 34 && dist > 0.5) {
           const force = (1 - band / 34) * 0.5;
-          n.vx += (dx / dist) * force;
-          n.vy += (dy / dist) * force;
+          n.ivx += (dx / dist) * force;
+          n.ivy += (dy / dist) * force;
           n.lit = Math.max(n.lit, 1 - band / 34);
         }
       }
 
-      n.vx *= DAMP;
-      n.vy *= DAMP;
+      n.ivx *= IMPULSE_DAMP;
+      n.ivy *= IMPULSE_DAMP;
 
-      // Keep a floor on drift so the web never settles into stillness.
-      const speed = Math.hypot(n.vx, n.vy);
-      if (speed < MIN_SPEED) {
-        const ang = Math.random() * Math.PI * 2;
-        n.vx += Math.cos(ang) * 0.05;
-        n.vy += Math.sin(ang) * 0.05;
-      }
+      n.x += n.bvx + n.ivx;
+      n.y += n.bvy + n.ivy;
 
-      n.x += n.vx;
-      n.y += n.vy;
-      if (n.x < 0 || n.x > w) { n.vx *= -1; n.x = Math.min(Math.max(n.x, 0), w); }
-      if (n.y < 0 || n.y > h) { n.vy *= -1; n.y = Math.min(Math.max(n.y, 0), h); }
+      // Wrap rather than bounce. Bouncing walls collect nodes in the corners.
+      const m = 12;
+      if (n.x < -m) n.x = w + m;
+      else if (n.x > w + m) n.x = -m;
+      if (n.y < -m) n.y = h + m;
+      else if (n.y > h + m) n.y = -m;
+
       evictFromZone(n);
 
       n.pulse += 0.02;
@@ -905,9 +935,8 @@ function initNetworkGraph() {
     ctx.clearRect(0, 0, w, h);
 
     // Nearest-neighbour strands with a degree cap. Linking every pair in range
-    // fused the whole field into a single mesh, so each node now takes at most
-    // MAX_LINKS partners, shortest candidates first, leaving separate lines
-    // scattered across the open space instead of one knot.
+    // fuses the field into one mesh, so each node takes at most MAX_LINKS
+    // partners, shortest first, leaving separate lines across the open space.
     pairs.length = 0;
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
@@ -928,27 +957,28 @@ function initNetworkGraph() {
       const a = nodes[p.i], b = nodes[p.j];
       const base = (1 - p.dist / LINK_DIST) * 0.34;
       const boost = Math.max(a.lit, b.lit);
-      drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.45, 1 + boost * 0.8);
+      drawStrand(a.x, a.y, b.x, b.y, base + boost * 0.45, 1 + boost * 0.8);
     }
 
-    // Strands anchoring the web to the cursor itself.
+    // Strands anchoring the web to the cursor itself. This is the detail that
+    // makes the field feel responsive rather than decorative.
     if (pointer.active) {
       for (const n of nodes) {
         const dist = Math.hypot(pointer.x - n.x, pointer.y - n.y);
-        if (dist >= CURSOR_DIST) continue;
+        if (dist >= CURSOR_LINK_DIST) continue;
         if (!strandClear(pointer.x, pointer.y, n.x, n.y)) continue;
-        const t = 1 - dist / CURSOR_DIST;
-        drawStrand(pointer.x, pointer.y, n.x, n.y, SIGNAL, t * 0.55, 0.9 + t);
+        const t = 1 - dist / CURSOR_LINK_DIST;
+        drawStrand(pointer.x, pointer.y, n.x, n.y, t * 0.6, 0.9 + t);
       }
       ctx.beginPath();
       ctx.arc(pointer.x, pointer.y, 3.2, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(" + SIGNAL + ", 0.95)";
+      ctx.fillStyle = "rgba(" + DOT + ", 0.95)";
       ctx.fill();
     }
 
     for (const rp of ripples) {
       const fade = Math.max(0, 1 - rp.r / Math.hypot(w, h));
-      ctx.strokeStyle = "rgba(" + SIGNAL + ", " + (fade * 0.3) + ")";
+      ctx.strokeStyle = "rgba(" + LINE + ", " + (fade * 0.3) + ")";
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
@@ -956,12 +986,12 @@ function initNetworkGraph() {
     }
 
     for (const n of nodes) {
-      const r = n.alert ? 2.6 + Math.sin(n.pulse) * 1.2 : 2 + n.lit * 1.8;
+      const r = n.alert ? 2.6 + Math.sin(n.pulse) * 1.2 : 1.9 + n.lit * 1.8;
       ctx.beginPath();
       ctx.arc(n.x, n.y, Math.max(r, 0.6), 0, Math.PI * 2);
       ctx.fillStyle = n.alert
         ? "rgba(" + ALERT + ", " + (0.6 + Math.sin(n.pulse) * 0.3) + ")"
-        : "rgba(" + (n.lit > 0.05 ? SIGNAL : NODE) + ", " + (0.72 + n.lit * 0.28) + ")";
+        : "rgba(" + DOT + ", " + (0.55 + n.lit * 0.45) + ")";
       ctx.fill();
     }
   }
@@ -980,7 +1010,7 @@ function initNetworkGraph() {
 
   function frame() {
     // The hero stages fade in after load, so zone boxes settle a beat late.
-    if (tick++ % 30 === 0) measureZones();
+    if (tick++ % 30 === 0) { measureZones(); syncCount(); }
     step();
     draw();
     rafId = requestAnimationFrame(frame);
