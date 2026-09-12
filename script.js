@@ -211,10 +211,16 @@ const caseRange = `open [1-${caseCount}]`;
 
 const experience = [
   {
-    date: "Jun 2026 - Dec 2026",
-    role: "Cybersecurity Intern (AI/ML)",
-    org: "Abbott (Exact Sciences) &middot; Madison, WI",
-    desc: "Contributing to two internal platforms built with a teammate, Baseline Guardian and CrowdCheck Hive, integrating CrowdStrike, Microsoft Intune, Tanium, and ServiceNow CMDB data for endpoint compliance scoring and device inventory correlation. Collaborating on Baseline Guardian's Python/FastAPI/PostgreSQL/AWS backend and CrowdCheck Hive's correlation logic and dashboard architecture. Regular participant in cybersecurity tabletop exercises stress-testing incident response plans.",
+    date: "Sep 2026 - Present",
+    role: "AI Cybersecurity Intern",
+    org: "Abbott &middot; Madison, WI (Hybrid)",
+    desc: "Contributing to ExmanIq, an internal vulnerability management platform monitoring 22,000+ tracked vulnerabilities across organizational assets using a predictive Impact x Likelihood risk model enriched with EPSS and NVD threat intelligence. Diagnosed a 27-day silent data-pipeline failure by recognizing an anomalous flat trend in the platform's composite risk score. Also built CrowdCheck Hive with a teammate, correlating CrowdStrike, Microsoft Intune, and ServiceNow CMDB data to identify device coverage gaps across the organization's endpoint security controls.",
+  },
+  {
+    date: "Jun 2026 - Sep 2026",
+    role: "Cybersecurity Intern",
+    org: "Exact Sciences &middot; Madison, WI (Hybrid)",
+    desc: "Built Baseline Guardian with a teammate, correlating data across multiple internal systems (CrowdStrike, Microsoft Intune, Tanium, ServiceNow CMDB) to assess security posture and endpoint compliance. Automated KeyCheck, a credential-risk monitoring pipeline scanning 1,300+ application registrations to identify expiring-credential risk before it became an incident.",
   },
   {
     date: "Jan 2026 - Apr 2026",
@@ -569,10 +575,10 @@ function tprint(body, text, cls) {
 
 const terminalCommands = {
   help: () => `Commands: <span class="thl">about</span>, <span class="thl">projects</span>, <span class="thl">experience</span>, <span class="thl">stack</span>, <span class="thl">contact</span>, <span class="thl">whoami</span>, <span class="thl">${caseRange}</span>, <span class="thl">clear</span>`,
-  about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). Cybersecurity Intern (AI/ML) @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
-  whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer 2027 roles",
+  about: () => "MS Cybersecurity @ Northeastern (GPA 3.8). AI Cybersecurity Intern @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
+  whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer and Fall 2027 roles",
   projects: () => `${caseCount} cases logged. Type <span class="thl">${caseRange}</span> for a case, or scroll to Project Log.`,
-  experience: () => "Abbott (Exact Sciences), Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
+  experience: () => "Abbott (AI Cybersecurity Intern), Exact Sciences, Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
   stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Zeek, RITA, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
   sudo: () => "Nice try. Access denied: this terminal only reads public data.",

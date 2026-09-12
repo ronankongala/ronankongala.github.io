@@ -290,8 +290,9 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   white-space: nowrap;
   width: max-content;
-  animation: scrollTicker 55s linear infinite;
+  animation: scrollTicker 110s linear infinite;
 }
+.ticker-wrap:hover .ticker-track { animation-play-state: paused; }
 .ticker-group {
   display: flex;
   gap: 40px;
