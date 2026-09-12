@@ -660,16 +660,27 @@ function initNetworkGraph() {
   const ctx = canvas.getContext("2d");
   const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const SIGNAL = "91, 141, 239";
+  const SIGNAL = "45, 212, 191";
   const ALERT = "232, 162, 61";
-  const NODE = "139, 150, 165";
+  const NODE = "122, 156, 172";
 
-  const LINK_DIST = 162;
-  const CURSOR_DIST = 200;
-  const PULL = 0.055;
-  const DAMP = 0.94;
-  const DRIFT = 0.25;
+  const LINK_DIST = 168;
+  const CURSOR_DIST = 210;
+  const PULL = 0.075;
+  const DAMP = 0.965;
+  const DRIFT = 0.3;
+  const MIN_SPEED = 0.11;
+
+  // Zone geometry: hard pad is the line nodes may never cross, soft margin is
+  // the cushion outside it where they start curving away.
   const ZONE_PAD = 16;
+  const ZONE_MARGIN = 54;
+  const ZONE_PUSH = 0.1;
+
+  // Mutual repulsion at close range. Without this, everything evicted from the
+  // zones piles into the same gap and the web reads as one knot.
+  const SEP_DIST = 52;
+  const SEP_PUSH = 0.05;
 
   let w = 0, h = 0;
 
@@ -710,7 +721,23 @@ function initNetworkGraph() {
     return null;
   }
 
-  // Shove a node out through whichever wall of the zone it is nearest.
+  // Steer away from a zone before reaching it, along whichever axis the node is
+  // shallowest on, so it slides around the box instead of stalling against it.
+  function zoneSteer(n) {
+    for (const z of zones) {
+      const hx = z.w / 2 + ZONE_MARGIN;
+      const hy = z.h / 2 + ZONE_MARGIN;
+      const dx = n.x - (z.x + z.w / 2);
+      const dy = n.y - (z.y + z.h / 2);
+      const ox = 1 - Math.abs(dx) / hx;
+      const oy = 1 - Math.abs(dy) / hy;
+      if (ox <= 0 || oy <= 0) continue;
+      if (ox < oy) n.vx += (dx >= 0 ? 1 : -1) * ox * ZONE_PUSH;
+      else n.vy += (dy >= 0 ? 1 : -1) * oy * ZONE_PUSH;
+    }
+  }
+
+  // Last-resort clamp so a node can never actually render on top of content.
   function evictFromZone(n) {
     const z = inZone(n.x, n.y);
     if (!z) return;
@@ -719,21 +746,21 @@ function initNetworkGraph() {
     const dTop = n.y - z.y;
     const dBottom = z.y + z.h - n.y;
     const min = Math.min(dLeft, dRight, dTop, dBottom);
-    if (min === dLeft) { n.x = z.x; n.vx = -Math.abs(n.vx) - 0.05; }
-    else if (min === dRight) { n.x = z.x + z.w; n.vx = Math.abs(n.vx) + 0.05; }
-    else if (min === dTop) { n.y = z.y; n.vy = -Math.abs(n.vy) - 0.05; }
-    else { n.y = z.y + z.h; n.vy = Math.abs(n.vy) + 0.05; }
+    if (min === dLeft) { n.x = z.x; n.vx = -Math.abs(n.vx); }
+    else if (min === dRight) { n.x = z.x + z.w; n.vx = Math.abs(n.vx); }
+    else if (min === dTop) { n.y = z.y; n.vy = -Math.abs(n.vy); }
+    else { n.y = z.y + z.h; n.vy = Math.abs(n.vy); }
   }
 
   resize();
   measureZones();
   window.addEventListener("resize", () => { resize(); measureZones(); });
 
-  const COUNT = window.innerWidth < 700 ? 32 : 58;
+  const COUNT = window.innerWidth < 700 ? 30 : 52;
 
   // Seed into open space directly so nothing has to visibly jump out on frame 1.
   function openSpot() {
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 60; i++) {
       const x = Math.random() * w;
       const y = Math.random() * h;
       if (!inZone(x, y)) return { x, y };
@@ -797,7 +824,24 @@ function initNetworkGraph() {
   }
 
   function step() {
+    // Spread pass: push apart anything that has bunched up.
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 > SEP_DIST * SEP_DIST || d2 < 0.01) continue;
+        const d = Math.sqrt(d2);
+        const f = (1 - d / SEP_DIST) * SEP_PUSH;
+        const ux = dx / d, uy = dy / d;
+        a.vx += ux * f; a.vy += uy * f;
+        b.vx -= ux * f; b.vy -= uy * f;
+      }
+    }
+
     for (const n of nodes) {
+      zoneSteer(n);
+
       // Cursor tugs nearby nodes toward it, so the web stretches under the pointer.
       if (pointer.active) {
         const dx = pointer.x - n.x;
@@ -829,9 +873,11 @@ function initNetworkGraph() {
       n.vy *= DAMP;
 
       // Keep a floor on drift so the web never settles into stillness.
-      if (Math.hypot(n.vx, n.vy) < 0.06) {
-        n.vx += (Math.random() - 0.5) * 0.04;
-        n.vy += (Math.random() - 0.5) * 0.04;
+      const speed = Math.hypot(n.vx, n.vy);
+      if (speed < MIN_SPEED) {
+        const ang = Math.random() * Math.PI * 2;
+        n.vx += Math.cos(ang) * 0.05;
+        n.vy += Math.sin(ang) * 0.05;
       }
 
       n.x += n.vx;
@@ -841,7 +887,7 @@ function initNetworkGraph() {
       evictFromZone(n);
 
       n.pulse += 0.02;
-      n.lit *= 0.92;
+      n.lit *= 0.93;
     }
 
     for (let i = ripples.length - 1; i >= 0; i--) {
@@ -860,9 +906,9 @@ function initNetworkGraph() {
         const dist = Math.hypot(a.x - b.x, a.y - b.y);
         if (dist >= LINK_DIST) continue;
         if (!strandClear(a.x, a.y, b.x, b.y)) continue;
-        const base = (1 - dist / LINK_DIST) * 0.24;
+        const base = (1 - dist / LINK_DIST) * 0.32;
         const boost = Math.max(a.lit, b.lit);
-        drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.3, 1 + boost * 0.6);
+        drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.45, 1 + boost * 0.8);
       }
     }
 
@@ -873,30 +919,30 @@ function initNetworkGraph() {
         if (dist >= CURSOR_DIST) continue;
         if (!strandClear(pointer.x, pointer.y, n.x, n.y)) continue;
         const t = 1 - dist / CURSOR_DIST;
-        drawStrand(pointer.x, pointer.y, n.x, n.y, SIGNAL, t * 0.42, 0.8 + t);
+        drawStrand(pointer.x, pointer.y, n.x, n.y, SIGNAL, t * 0.55, 0.9 + t);
       }
       ctx.beginPath();
-      ctx.arc(pointer.x, pointer.y, 2.6, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(" + SIGNAL + ", 0.85)";
+      ctx.arc(pointer.x, pointer.y, 3.2, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(" + SIGNAL + ", 0.95)";
       ctx.fill();
     }
 
     for (const rp of ripples) {
       const fade = Math.max(0, 1 - rp.r / Math.hypot(w, h));
-      ctx.strokeStyle = "rgba(" + SIGNAL + ", " + (fade * 0.22) + ")";
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(" + SIGNAL + ", " + (fade * 0.3) + ")";
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     for (const n of nodes) {
-      const r = n.alert ? 2.4 + Math.sin(n.pulse) * 1.2 : 1.8 + n.lit * 1.6;
+      const r = n.alert ? 2.6 + Math.sin(n.pulse) * 1.2 : 2 + n.lit * 1.8;
       ctx.beginPath();
       ctx.arc(n.x, n.y, Math.max(r, 0.6), 0, Math.PI * 2);
       ctx.fillStyle = n.alert
-        ? "rgba(" + ALERT + ", " + (0.5 + Math.sin(n.pulse) * 0.3) + ")"
-        : "rgba(" + (n.lit > 0.05 ? SIGNAL : NODE) + ", " + (0.62 + n.lit * 0.38) + ")";
+        ? "rgba(" + ALERT + ", " + (0.6 + Math.sin(n.pulse) * 0.3) + ")"
+        : "rgba(" + (n.lit > 0.05 ? SIGNAL : NODE) + ", " + (0.72 + n.lit * 0.28) + ")";
       ctx.fill();
     }
   }
