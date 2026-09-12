@@ -65,7 +65,7 @@ const projects = [
     tags: ["OCaml", "dune", "Zeek", "Beacon Detection", "Functional Programming", "Network Forensics"],
     desc: "Functional rewrite of the CASE-17 beacon-scoring logic in OCaml, built with dune, comparing an imperative Python pipeline against a purely functional one solving the same detection problem. Parses a Zeek conn.log, groups connections by source IP through Map.Make(String) at O(n log k), sorts per-IP timestamps, folds consecutive inter-arrival gaps with List.fold_left, and computes population variance over those gaps to flag low-variance periodic senders as C2 beacon candidates -- the same signal RITA scores. Tuned with min_conns = 5 and a variance threshold of 5.0 seconds squared; against the bundled synthetic conn.log it isolates 10.0.0.5 at a 477.1s mean interval and variance 1.84 across 6 connections, separating it from two high-variance talkers. Results are modeled as a beacon_verdict variant (TooFewConns, HighVariance, BeaconCandidate), making an unscored IP structurally unable to reach the output printer and removing the sentinel-plus-assert guard the Python version needed.",
     date: "Aug 2026",
-    link: "https://github.com/ronankongala/zeek-network-forensics-lab",
+    link: "https://github.com/ronankongala/zeek-beacon-ocaml",
   },
   {
     id: "CASE-17",
@@ -73,7 +73,7 @@ const projects = [
     tags: ["Zeek", "RITA", "Jupyter", "Beacon Detection", "Network Forensics", "Cobalt Strike"],
     desc: "End-to-end network forensics lab detecting SSLoad and Cobalt Strike C2 beaconing from a real malware PCAP. Ran Zeek 8.2.1 against a 6.4MB PCAP to generate 17 structured logs including conn.log, dns.log, ssl.log, kerberos.log, and ldap.log. RITA v5.1.2 scored all external connections for beacon regularity, auto-tagging 85.239.53.219 with rare_signature:SSLoad/1.1 (beacon score 0.504, 11 connections, 5,087s total duration, mean interval 477 seconds). Built 3 Jupyter threat hunting notebooks: conn.log duration analysis, DNS query profiling, and beacon interval visualization. Mapped findings to 6 MITRE ATT&CK techniques (T1071, T1071.004, T1008, T1095, T1557, T1018) with a full IOC table and 2 Sigma detection rules in the investigation report PDF.",
     date: "Aug 2026",
-    link: "https://github.com/ronankongala/zeek-beacon-ocaml",
+    link: "https://github.com/ronankongala/zeek-network-forensics-lab",
   },
   {
     id: "CASE-16",
