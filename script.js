@@ -24,6 +24,9 @@ const tickerLines = [
   { text: "[ZEEK] 17 structured logs generated: conn.log, dns.log, ssl.log, kerberos.log, ldap.log confirmed", sev: "ok" },
   { text: "[OPENSCAP] Ubuntu 24.04 STIG V1R5 score 69.58% to 78.06% after 13 Ansible changes, 0 failures", sev: "ok" },
   { text: "[POA&M] 7 findings open post-remediation, each keyed to a real DISA STIG rule ID", sev: "high" },
+  { text: "[OPA] 7/7 Rego policy tests passing, manager delete allowed, non-manager denied 403", sev: "ok" },
+  { text: "[VAULT] delete-order AppRole credential minted, 20s TTL, rejected after expiry", sev: "ok" },
+  { text: "[MTLS] tcpdump on ztlab-net shows TLS records only, no legible method, path or body", sev: "ok" },
 ];
 
 const projects = [
@@ -34,6 +37,14 @@ const projects = [
     desc: "End-to-end transaction fraud detection pipeline run against the real IEEE-CIS Fraud Detection dataset, then audited for bias and privacy rather than stopping at a model score. Engineered velocity, amount-deviation, geo-mismatch, and temporal features, then trained and compared four models -- class-weighted logistic regression, RandomForest, XGBoost, and an unsupervised IsolationForest -- on a time-based split rather than a random one, so future fraud patterns cannot leak backward into training. Scored on recall at a fixed 3% false-positive budget instead of accuracy, since an alert queue has finite analyst capacity: RandomForest led at 0.748 ROC-AUC and 16.0% recall, catching 649 of 4,064 held-out fraud cases against 3,420 false positives. Logistic regression reached a nearly identical 0.742 AUC but only a third of that recall at the operating point, so AUC alone would have picked the wrong model. The same pipeline scored ~0.98 AUC on synthetic data, and the gap is reported as the finding rather than buried -- the synthetic fraud signal was hand-designed and therefore learnable in a way real fraud is not. SHAP TreeExplainer attribution ranked amount, hour_of_day, and merchant_category_electronics as the top drivers. A subgroup false-positive-rate audit found a 23.7-point spread across merchant categories (electronics at 23.9% versus online_retail at 0.24%), flagged for investigation before any production use, while the geo-mismatch signal is documented as degenerate under the dataset's pseudo-customer-ID reconstruction instead of being reported as a fairness pass. Ships with a SQLite alert case-management layer with audit trail, post-incident trend analysis with generated case narratives, and a full GDPR Article 35 DPIA plus Article 15 access and Article 17 erasure handling including retention-conflict logic.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/fraudsentry",
+  },
+  {
+    id: "CASE-22",
+    title: "Zero Trust Test Bed: mTLS, OIDC, OPA + Just-in-Time Vault Credentials",
+    tags: ["Zero Trust", "NIST SP 800-207", "mutual TLS", "Keycloak", "OIDC", "SAML 2.0", "Open Policy Agent", "Rego", "HashiCorp Vault", "Docker"],
+    desc: "A working zero trust test bed rather than a diagram of one: 3 microservices (gateway, orders, inventory) where every request must clear 4 independent layers before it reaches an upstream service. The network is the starting point, not a control. Only the gateway publishes a port; orders and inventory sit on an internal bridge with no port mapping at all, so there is nowhere else to send a request. Layer 1 is mutual TLS, with all 3 services presenting certificates signed by the lab CA and each requiring one from the caller, verified directly through openssl s_client. Identity is the certificate, not the source address. Layer 2 is OIDC: a token is minted at Keycloak's token endpoint and presented to the gateway, which returns 401 without it, so authentication is enforced rather than assumed from network position. Layer 3 is Open Policy Agent as the decision point on every request, with rules in policies/authz.rego covering both sides of each case across 7 unit tests (authenticated read allowed and anonymous denied, manager delete allowed and non-manager denied, manager mint allowed and non-manager denied, plus unknown paths falling through to default deny), all 7 passing under opa test. The same rules are then proved live: testuser and manageruser hit an identical endpoint with identical requests and get 403 and 200 respectively, the only difference being the roles in the token, which is what makes the policy dynamic rather than a static access list. Layer 4 replaces standing privilege with a window: deleting an order requires a credential minted on demand from Vault's delete-order AppRole carrying a 20 second non-renewable TTL, demonstrated minted, used inside the TTL, then rejected after expiry. Encryption is verified rather than asserted, with tcpdump on the bridge network showing TLS records and no legible HTTP method, path, header, or body, contrasted against a plaintext baseline captured before mTLS where the same request was fully readable. Two mock SAML 2.0 service providers on ports 9001 and 9002 demonstrate federated SSO against the same realm, each with its own entity ID, ACS URL, and distinct session cookie name, since a shared cookie would let the second app read the first app's session and prove nothing. ZERO_TRUST_MAPPING.md maps every control, and the lab's known gaps, to the 7 NIST SP 800-207 tenets. A single verify.sh pass re-runs the whole suite, printing PASS or FAIL per check and exiting non-zero on any failure.",
+    date: "Sep 2026",
+    link: "https://github.com/ronankongala/zerotrust-lab",
   },
   {
     id: "CASE-21",
@@ -307,6 +318,15 @@ const stack = [
       { name: "ISO 27001", level: 80 },
       { name: "PCI DSS", level: 78 },
       { name: "SOC 2 / GDPR / HIPAA", level: 76 },
+    ],
+  },
+  {
+    group: "Identity & Access",
+    items: [
+      { name: "Keycloak (OIDC / SAML)", level: 78 },
+      { name: "Open Policy Agent / Rego", level: 76 },
+      { name: "HashiCorp Vault", level: 74 },
+      { name: "mTLS / PKI", level: 76 },
     ],
   },
   {

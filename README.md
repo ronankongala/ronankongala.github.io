@@ -13,8 +13,8 @@ I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, c
 - **Animated intro sequence** -- a short terminal-style boot log plays on load
 - **Typewriter hero** -- name types in letter by letter, synced with a short avatar video introduction
 - **Live signal-graph background** -- an animated node network rendered on canvas, no libraries. Nodes drift, link to their nearest neighbours, lean toward the cursor, and stay clear of the headline and photo
-- **Interactive terminal** -- type real commands (`help`, `projects`, `open 1-22`, `whoami`, `contact`, `clear`) to navigate the site
-- **Filterable project grid** -- 22 case studies (CASE-01 through CASE-21 plus CASE-25), click any tag to filter, click a card for the full write-up in a modal
+- **Interactive terminal** -- type real commands (`help`, `projects`, `open 1-23`, `whoami`, `contact`, `clear`) to navigate the site
+- **Filterable project grid** -- 23 case studies (CASE-01 through CASE-22 plus CASE-25), click any tag to filter, click a card for the full write-up in a modal
 - **Scrolling signal-log ticker** -- real stats pulled from my own projects (attacker sessions captured, IDS alerts correlated, CVSS scores, etc.)
 - **Animated skill meters**, staggered scroll reveals, smooth page transitions
 - **Fully responsive**, respects `prefers-reduced-motion`, keyboard accessible
