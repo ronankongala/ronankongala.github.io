@@ -669,6 +669,7 @@ function initNetworkGraph() {
   const PULL = 0.055;
   const DAMP = 0.94;
   const DRIFT = 0.25;
+  const ZONE_PAD = 16;
 
   let w = 0, h = 0;
 
@@ -680,22 +681,81 @@ function initNetworkGraph() {
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
+
+  // The headline and the photo card are no-go areas. The web should read as
+  // living in the open space around them, not as texture behind them.
+  const ZONE_SELECTORS = [".hero-inner", ".laptop-showcase"];
+  let zones = [];
+
+  function measureZones() {
+    const cr = canvas.getBoundingClientRect();
+    zones = ZONE_SELECTORS
+      .map(sel => document.querySelector(sel))
+      .filter(el => el && el.getBoundingClientRect().width > 0)
+      .map(el => {
+        const r = el.getBoundingClientRect();
+        return {
+          x: r.left - cr.left - ZONE_PAD,
+          y: r.top - cr.top - ZONE_PAD,
+          w: r.width + ZONE_PAD * 2,
+          h: r.height + ZONE_PAD * 2,
+        };
+      });
+  }
+
+  function inZone(x, y) {
+    for (const z of zones) {
+      if (x > z.x && x < z.x + z.w && y > z.y && y < z.y + z.h) return z;
+    }
+    return null;
+  }
+
+  // Shove a node out through whichever wall of the zone it is nearest.
+  function evictFromZone(n) {
+    const z = inZone(n.x, n.y);
+    if (!z) return;
+    const dLeft = n.x - z.x;
+    const dRight = z.x + z.w - n.x;
+    const dTop = n.y - z.y;
+    const dBottom = z.y + z.h - n.y;
+    const min = Math.min(dLeft, dRight, dTop, dBottom);
+    if (min === dLeft) { n.x = z.x; n.vx = -Math.abs(n.vx) - 0.05; }
+    else if (min === dRight) { n.x = z.x + z.w; n.vx = Math.abs(n.vx) + 0.05; }
+    else if (min === dTop) { n.y = z.y; n.vy = -Math.abs(n.vy) - 0.05; }
+    else { n.y = z.y + z.h; n.vy = Math.abs(n.vy) + 0.05; }
+  }
+
   resize();
-  window.addEventListener("resize", resize);
+  measureZones();
+  window.addEventListener("resize", () => { resize(); measureZones(); });
 
   const COUNT = window.innerWidth < 700 ? 32 : 58;
-  const nodes = Array.from({ length: COUNT }, () => ({
-    x: Math.random() * w,
-    y: Math.random() * h,
-    vx: (Math.random() - 0.5) * DRIFT,
-    vy: (Math.random() - 0.5) * DRIFT,
-    pulse: Math.random() * Math.PI * 2,
-    alert: Math.random() < 0.12,
-    lit: 0,
-  }));
+
+  // Seed into open space directly so nothing has to visibly jump out on frame 1.
+  function openSpot() {
+    for (let i = 0; i < 40; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      if (!inZone(x, y)) return { x, y };
+    }
+    return { x: Math.random() * w, y: Math.random() * h };
+  }
+
+  const nodes = Array.from({ length: COUNT }, () => {
+    const spot = openSpot();
+    return {
+      x: spot.x,
+      y: spot.y,
+      vx: (Math.random() - 0.5) * DRIFT,
+      vy: (Math.random() - 0.5) * DRIFT,
+      pulse: Math.random() * Math.PI * 2,
+      alert: Math.random() < 0.12,
+      lit: 0,
+    };
+  });
 
   // Pointer is tracked in canvas space. The canvas is pointer-events:none and sits
-  // behind the hero text, so we listen on window and project into local coords.
+  // behind the hero content, so we listen on window and project into local coords.
   const pointer = { x: 0, y: 0, active: false };
   const ripples = [];
 
@@ -703,9 +763,11 @@ function initNetworkGraph() {
     const r = canvas.getBoundingClientRect();
     pointer.x = e.clientX - r.left;
     pointer.y = e.clientY - r.top;
-    pointer.active =
+    const inBounds =
       pointer.x > -60 && pointer.x < w + 60 &&
       pointer.y > -60 && pointer.y < h + 60;
+    // Over the headline or the photo, the web stays out of the way entirely.
+    pointer.active = inBounds && !inZone(pointer.x, pointer.y);
   }
 
   function bindPointer() {
@@ -724,6 +786,14 @@ function initNetworkGraph() {
     ctx.moveTo(ax, ay);
     ctx.lineTo(bx, by);
     ctx.stroke();
+  }
+
+  // A strand can still clip a zone corner even when both ends are outside it,
+  // so sample the midpoint and the quarter points before drawing.
+  function strandClear(ax, ay, bx, by) {
+    return !inZone((ax + bx) / 2, (ay + by) / 2)
+      && !inZone(ax + (bx - ax) * 0.25, ay + (by - ay) * 0.25)
+      && !inZone(ax + (bx - ax) * 0.75, ay + (by - ay) * 0.75);
   }
 
   function step() {
@@ -759,8 +829,7 @@ function initNetworkGraph() {
       n.vy *= DAMP;
 
       // Keep a floor on drift so the web never settles into stillness.
-      const speed = Math.hypot(n.vx, n.vy);
-      if (speed < 0.06) {
+      if (Math.hypot(n.vx, n.vy) < 0.06) {
         n.vx += (Math.random() - 0.5) * 0.04;
         n.vy += (Math.random() - 0.5) * 0.04;
       }
@@ -769,6 +838,7 @@ function initNetworkGraph() {
       n.y += n.vy;
       if (n.x < 0 || n.x > w) { n.vx *= -1; n.x = Math.min(Math.max(n.x, 0), w); }
       if (n.y < 0 || n.y > h) { n.vy *= -1; n.y = Math.min(Math.max(n.y, 0), h); }
+      evictFromZone(n);
 
       n.pulse += 0.02;
       n.lit *= 0.92;
@@ -789,6 +859,7 @@ function initNetworkGraph() {
         const a = nodes[i], b = nodes[j];
         const dist = Math.hypot(a.x - b.x, a.y - b.y);
         if (dist >= LINK_DIST) continue;
+        if (!strandClear(a.x, a.y, b.x, b.y)) continue;
         const base = (1 - dist / LINK_DIST) * 0.24;
         const boost = Math.max(a.lit, b.lit);
         drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.3, 1 + boost * 0.6);
@@ -800,6 +871,7 @@ function initNetworkGraph() {
       for (const n of nodes) {
         const dist = Math.hypot(pointer.x - n.x, pointer.y - n.y);
         if (dist >= CURSOR_DIST) continue;
+        if (!strandClear(pointer.x, pointer.y, n.x, n.y)) continue;
         const t = 1 - dist / CURSOR_DIST;
         drawStrand(pointer.x, pointer.y, n.x, n.y, SIGNAL, t * 0.42, 0.8 + t);
       }
@@ -839,8 +911,11 @@ function initNetworkGraph() {
   // Only burn frames while the hero is actually on screen and the tab is focused.
   let rafId = 0;
   let onScreen = true;
+  let tick = 0;
 
   function frame() {
+    // The hero stages fade in after load, so zone boxes settle a beat late.
+    if (tick++ % 30 === 0) measureZones();
     step();
     draw();
     rafId = requestAnimationFrame(frame);
