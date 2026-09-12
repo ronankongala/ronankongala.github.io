@@ -28,10 +28,14 @@ Fonts: Space Grotesk, IBM Plex Sans, IBM Plex Mono via Google Fonts.
 ## Structure
 
 ```
-├── index.html      # markup for all sections
-├── styles.css      # all styling and design tokens
-├── script.js       # terminal, filters, animations, project data
-└── assets/         # avatar video/poster image
+├── index.html          # markup for all sections, meta and link-preview tags
+├── styles.css          # all styling and design tokens
+├── script.js           # terminal, filters, animations, case data
+├── favicon.svg         # RK wordmark
+├── social-card.jpg     # 1200x630 og:image for link previews
+├── avatar-poster.jpg   # video poster frame
+├── Avatar video.mp4    # hero greeting clip
+└── Avatar image.png    # full-size source for the poster, not served to visitors
 ```
 
 ## Running locally
