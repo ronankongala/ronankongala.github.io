@@ -664,7 +664,8 @@ function initNetworkGraph() {
   const ALERT = "232, 162, 61";
   const NODE = "122, 156, 172";
 
-  const LINK_DIST = 168;
+  const LINK_DIST = 132;
+  const MAX_LINKS = 2;
   const CURSOR_DIST = 210;
   const PULL = 0.075;
   const DAMP = 0.965;
@@ -679,7 +680,7 @@ function initNetworkGraph() {
 
   // Mutual repulsion at close range. Without this, everything evicted from the
   // zones piles into the same gap and the web reads as one knot.
-  const SEP_DIST = 52;
+  const SEP_DIST = 74;
   const SEP_PUSH = 0.05;
 
   let w = 0, h = 0;
@@ -756,7 +757,7 @@ function initNetworkGraph() {
   measureZones();
   window.addEventListener("resize", () => { resize(); measureZones(); });
 
-  const COUNT = window.innerWidth < 700 ? 30 : 52;
+  const COUNT = window.innerWidth < 700 ? 26 : 46;
 
   // Seed into open space directly so nothing has to visibly jump out on frame 1.
   function openSpot() {
@@ -783,6 +784,10 @@ function initNetworkGraph() {
 
   // Pointer is tracked in canvas space. The canvas is pointer-events:none and sits
   // behind the hero content, so we listen on window and project into local coords.
+  // Reused per frame so the strand pass allocates nothing at 60fps.
+  const degree = new Uint8Array(COUNT);
+  const pairs = [];
+
   const pointer = { x: 0, y: 0, active: false };
   const ripples = [];
 
@@ -899,17 +904,31 @@ function initNetworkGraph() {
   function draw() {
     ctx.clearRect(0, 0, w, h);
 
-    // Node-to-node strands, brightened where the cursor is pulling.
+    // Nearest-neighbour strands with a degree cap. Linking every pair in range
+    // fused the whole field into a single mesh, so each node now takes at most
+    // MAX_LINKS partners, shortest candidates first, leaving separate lines
+    // scattered across the open space instead of one knot.
+    pairs.length = 0;
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const a = nodes[i], b = nodes[j];
         const dist = Math.hypot(a.x - b.x, a.y - b.y);
         if (dist >= LINK_DIST) continue;
         if (!strandClear(a.x, a.y, b.x, b.y)) continue;
-        const base = (1 - dist / LINK_DIST) * 0.32;
-        const boost = Math.max(a.lit, b.lit);
-        drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.45, 1 + boost * 0.8);
+        pairs.push({ i: i, j: j, dist: dist });
       }
+    }
+    pairs.sort((p, q) => p.dist - q.dist);
+
+    degree.fill(0);
+    for (const p of pairs) {
+      if (degree[p.i] >= MAX_LINKS || degree[p.j] >= MAX_LINKS) continue;
+      degree[p.i]++;
+      degree[p.j]++;
+      const a = nodes[p.i], b = nodes[p.j];
+      const base = (1 - p.dist / LINK_DIST) * 0.34;
+      const boost = Math.max(a.lit, b.lit);
+      drawStrand(a.x, a.y, b.x, b.y, SIGNAL, base + boost * 0.45, 1 + boost * 0.8);
     }
 
     // Strands anchoring the web to the cursor itself.
