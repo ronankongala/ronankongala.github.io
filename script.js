@@ -27,6 +27,9 @@ const tickerLines = [
   { text: "[OPA] 7/7 Rego policy tests passing, manager delete allowed, non-manager denied 403", sev: "ok" },
   { text: "[VAULT] delete-order AppRole credential minted, 20s TTL, rejected after expiry", sev: "ok" },
   { text: "[MTLS] tcpdump on ztlab-net shows TLS records only, no legible method, path or body", sev: "ok" },
+  { text: "[SONARQUBE] SAST gate blocked on BLOCKER java:S6437 and CRITICAL java:S5547, cleared after removal", sev: "high" },
+  { text: "[HELM] vulntrack chart deployed, backend/frontend/postgres pods running, 0 restarts", sev: "ok" },
+  { text: "[BURP] 3 DAST findings on VulnTrack API: missing CSP, JWT enforced, SQLi on filters not exploitable", sev: "ok" },
 ];
 
 const projects = [
@@ -37,6 +40,14 @@ const projects = [
     desc: "End-to-end transaction fraud detection pipeline run against the real IEEE-CIS Fraud Detection dataset, then audited for bias and privacy rather than stopping at a model score. Engineered velocity, amount-deviation, geo-mismatch, and temporal features, then trained and compared four models -- class-weighted logistic regression, RandomForest, XGBoost, and an unsupervised IsolationForest -- on a time-based split rather than a random one, so future fraud patterns cannot leak backward into training. Scored on recall at a fixed 3% false-positive budget instead of accuracy, since an alert queue has finite analyst capacity: RandomForest led at 0.748 ROC-AUC and 16.0% recall, catching 649 of 4,064 held-out fraud cases against 3,420 false positives. Logistic regression reached a nearly identical 0.742 AUC but only a third of that recall at the operating point, so AUC alone would have picked the wrong model. The same pipeline scored ~0.98 AUC on synthetic data, and the gap is reported as the finding rather than buried -- the synthetic fraud signal was hand-designed and therefore learnable in a way real fraud is not. SHAP TreeExplainer attribution ranked amount, hour_of_day, and merchant_category_electronics as the top drivers. A subgroup false-positive-rate audit found a 23.7-point spread across merchant categories (electronics at 23.9% versus online_retail at 0.24%), flagged for investigation before any production use, while the geo-mismatch signal is documented as degenerate under the dataset's pseudo-customer-ID reconstruction instead of being reported as a fairness pass. Ships with a SQLite alert case-management layer with audit trail, post-incident trend analysis with generated case narratives, and a full GDPR Article 35 DPIA plus Article 15 access and Article 17 erasure handling including retention-conflict logic.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/fraudsentry",
+  },
+  {
+    id: "CASE-23",
+    title: "VulnTrack: Full-Stack Vulnerability Management with a DevSecOps Pipeline",
+    tags: ["Spring Boot", "React", "PostgreSQL", "JWT", "Jenkins", "SonarQube", "SAST", "Kubernetes", "Helm", "Burp Suite", "DAST"],
+    desc: "A full-stack vulnerability management application built and then carried through a complete secure delivery pipeline rather than stopping at a working app. The backend is a Spring Boot 4 REST API on Java 21 with Spring Data JPA over PostgreSQL 16, Flyway-managed schema migrations, and stateless JWT authentication through Spring Security, exposing CRUD for vulnerabilities linked to assets and filtering by severity and status. The React and TypeScript SPA provides a login flow, a severity color-coded dashboard with severity and status filters, and a per-finding detail view. A declarative Jenkins pipeline runs 7 stages (Checkout, Build Backend, Build Frontend, Test, SonarQube Analysis, Quality Gate, Package), and the SAST gate was validated against deliberately injected defects instead of assumed to work: it failed the build on a BLOCKER java:S6437 hard-coded credential and a CRITICAL java:S5547 weak DES cipher, then passed once both were removed, with every stage green. The app ships as Docker images (the frontend served by nginx and proxying /api to the backend) and a Helm chart deploying backend, frontend, and PostgreSQL as separate Deployments with Services, a PVC for database storage, a ConfigMap for non-secret settings, and Secrets for credentials and the JWT signing key, generated on install and preserved across upgrades; all 3 pods ran with 0 restarts. Manual DAST with Burp Suite against the OWASP Top 10 produced 3 documented findings: a Low-severity missing Content-Security-Policy header with Spring Security remediation, confirmation that every /api/vulnerabilities endpoint returns 401 with a WWW-Authenticate: Bearer challenge when no token is supplied, and a SQL injection probe on the filter parameters that the parameterized JPA queries treated as a literal value, returning an empty result with no error or data exposure.",
+    date: "Sep 2026",
+    link: "https://github.com/ronankongala/vulntrack",
   },
   {
     id: "CASE-22",
