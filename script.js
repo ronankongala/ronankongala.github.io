@@ -30,9 +30,20 @@ const tickerLines = [
   { text: "[SONARQUBE] SAST gate blocked on BLOCKER java:S6437 and CRITICAL java:S5547, cleared after removal", sev: "high" },
   { text: "[HELM] vulntrack chart deployed, backend/frontend/postgres pods running, 0 restarts", sev: "ok" },
   { text: "[BURP] 3 DAST findings on VulnTrack API: missing CSP, JWT enforced, SQLi on filters not exploitable", sev: "ok" },
+  { text: "[SLIVER C2] 7 ATT&CK techniques executed across full kill chain: T1204.002, T1071.001, T1547.001, T1134.001, T1003.002, T1550.002, T1041", sev: "high" },
+  { text: "[PYPYKATZ] 4 NTLM hashes extracted from SAM hive: Administrator, Guest, DefaultAccount, WDAGUtilityAccount, Victim", sev: "high" },
+  { text: "[IMPACKET] pass-the-hash SMB auth confirmed against 192.168.93.138, ADMIN$ C$ IPC$ shares enumerated", sev: "high" },
 ];
 
 const projects = [
+  {
+    id: "CASE-26",
+    title: "Red Team C2 Lab: Sliver C2 Adversary Emulation",
+    tags: ["Sliver C2", "MITRE ATT&CK", "Red Team", "impacket", "pypykatz", "VMware", "Adversary Emulation"],
+    desc: "Full adversary emulation lab running Sliver C2 v1.7.7 against a Windows 11 Enterprise victim on an isolated VMware NAT network. Executed 7 MITRE ATT&CK techniques: HTTPS beacon delivery (T1204.002), C2 comms on port 443 at a 60-second interval (T1071.001), registry run key persistence confirmed in regedit (T1547.001), token impersonation with SeImpersonatePrivilege confirmed (T1134.001), SAM and SYSTEM hive dump parsed with pypykatz yielding 4 NTLM hashes (T1003.002), pass-the-hash SMB authentication via impacket (T1550.002), and file exfiltration over the live C2 channel (T1041). Ships with 3 Sigma detection rules, an ATT&CK Navigator layer, and a structured red team report.",
+    date: "Sep 2026",
+    link: "https://github.com/ronankongala/red-team-c2-lab",
+  },
   {
     id: "CASE-25",
     title: "FraudSentry: Fraud Detection, SHAP Explainability + Fairness Audit",
@@ -707,15 +718,10 @@ function initNetworkGraph() {
   const CURSOR_LINK_DIST = 190;
   const PULL = 0.075;
 
-  // Base drift is constant forever. Everything interactive lands in a separate
-  // impulse velocity that decays, so a shove fades back to the base drift
-  // instead of permanently speeding a node up.
   const IMPULSE_DAMP = 0.92;
   const SPEED_MIN = 0.15;
   const SPEED_MAX = 0.35;
 
-  // One node per this many pixels of open space, measured after the content
-  // boxes are carved out, so density holds steady across viewport sizes.
   const AREA_PER_NODE = 14000;
   const COUNT_MIN = 30;
   const COUNT_MAX = 120;
@@ -738,8 +744,6 @@ function initNetworkGraph() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  // The headline and the photo card are no-go areas. The web should read as
-  // living in the open space around them, not as texture behind them.
   const ZONE_SELECTORS = [".hero-inner", ".laptop-showcase"];
   let zones = [];
 
@@ -774,8 +778,6 @@ function initNetworkGraph() {
     return Math.max(w * h - taken, w * h * 0.15);
   }
 
-  // Steer away from a zone before reaching it, along whichever axis the node is
-  // shallowest on, so it slides around the box instead of stalling against it.
   function zoneSteer(n) {
     for (const z of zones) {
       const hx = z.w / 2 + ZONE_MARGIN;
@@ -790,7 +792,6 @@ function initNetworkGraph() {
     }
   }
 
-  // Last-resort clamp so a node can never actually render on top of content.
   function evictFromZone(n) {
     const z = inZone(n.x, n.y);
     if (!z) return;
@@ -854,8 +855,6 @@ function initNetworkGraph() {
 
   window.addEventListener("resize", () => { resize(); measureZones(); syncCount(); });
 
-  // Pointer is tracked in canvas space. The canvas is pointer-events:none and sits
-  // behind the hero content, so we listen on window and project into local coords.
   const pointer = { x: 0, y: 0, active: false };
   const ripples = [];
 
@@ -866,7 +865,6 @@ function initNetworkGraph() {
     const inBounds =
       pointer.x > -60 && pointer.x < w + 60 &&
       pointer.y > -60 && pointer.y < h + 60;
-    // Over the headline or the photo, the web stays out of the way entirely.
     pointer.active = inBounds && !inZone(pointer.x, pointer.y);
   }
 
@@ -888,8 +886,6 @@ function initNetworkGraph() {
     ctx.stroke();
   }
 
-  // A strand can still clip a zone corner even when both ends are outside it,
-  // so sample the midpoint and the quarter points before drawing.
   function strandClear(ax, ay, bx, by) {
     return !inZone((ax + bx) / 2, (ay + by) / 2)
       && !inZone(ax + (bx - ax) * 0.25, ay + (by - ay) * 0.25)
@@ -897,8 +893,6 @@ function initNetworkGraph() {
   }
 
   function step() {
-    // Spread pass: push apart anything that has bunched up. This is what keeps
-    // cursor attraction from collapsing the whole field into the pointer.
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const a = nodes[i], b = nodes[j];
@@ -916,7 +910,6 @@ function initNetworkGraph() {
     for (const n of nodes) {
       zoneSteer(n);
 
-      // Cursor tugs nearby nodes toward it, so the web leans your way.
       if (pointer.active) {
         const dx = pointer.x - n.x;
         const dy = pointer.y - n.y;
@@ -929,7 +922,6 @@ function initNetworkGraph() {
         }
       }
 
-      // Ripple rings shove nodes outward as the wavefront passes through them.
       for (const rp of ripples) {
         const dx = n.x - rp.x;
         const dy = n.y - rp.y;
@@ -949,7 +941,6 @@ function initNetworkGraph() {
       n.x += n.bvx + n.ivx;
       n.y += n.bvy + n.ivy;
 
-      // Wrap rather than bounce. Bouncing walls collect nodes in the corners.
       const m = 12;
       if (n.x < -m) n.x = w + m;
       else if (n.x > w + m) n.x = -m;
@@ -971,9 +962,6 @@ function initNetworkGraph() {
   function draw() {
     ctx.clearRect(0, 0, w, h);
 
-    // Nearest-neighbour strands with a degree cap. Linking every pair in range
-    // fuses the field into one mesh, so each node takes at most MAX_LINKS
-    // partners, shortest first, leaving separate lines across the open space.
     pairs.length = 0;
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
@@ -997,8 +985,6 @@ function initNetworkGraph() {
       drawStrand(a.x, a.y, b.x, b.y, base + boost * 0.45, 1 + boost * 0.8);
     }
 
-    // Strands anchoring the web to the cursor itself. This is the detail that
-    // makes the field feel responsive rather than decorative.
     if (pointer.active) {
       for (const n of nodes) {
         const dist = Math.hypot(pointer.x - n.x, pointer.y - n.y);
@@ -1040,13 +1026,11 @@ function initNetworkGraph() {
 
   bindPointer();
 
-  // Only burn frames while the hero is actually on screen and the tab is focused.
   let rafId = 0;
   let onScreen = true;
   let tick = 0;
 
   function frame() {
-    // The hero stages fade in after load, so zone boxes settle a beat late.
     if (tick++ % 30 === 0) { measureZones(); syncCount(); }
     step();
     draw();
@@ -1076,15 +1060,11 @@ function initNetworkGraph() {
 
 const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/<>*+-_";
 
-// Resolves text left to right out of noise. Keeps the final string on aria-label
-// so assistive tech never reads the intermediate garbage.
 function scrambleIn(el, speed = 1.6) {
   const text = el.dataset.text || el.textContent;
   el.dataset.text = text;
   el.setAttribute("aria-label", text);
 
-  // Pin the settled height first: mid-scramble the string is shorter, and a
-  // wrapped title would otherwise collapse a line and shove the page around.
   el.style.minHeight = el.offsetHeight + "px";
 
   let frame = 0;
@@ -1107,7 +1087,6 @@ function scrambleIn(el, speed = 1.6) {
   tick();
 }
 
-// Splits a line into word spans so they can rise in sequence instead of as a block.
 function splitWords(el) {
   if (el.dataset.split === "1") return;
   const words = el.textContent.trim().split(/\s+/);
@@ -1134,8 +1113,6 @@ function initTextFX() {
   }
 
   if (!("IntersectionObserver" in window)) return;
-  // Hero labels are handled by the intro sequence; observing them here would burn
-  // the scramble while the hero is still faded out.
   const titles = Array.from(document.querySelectorAll(".section-title, .eyebrow"))
     .filter(el => !el.closest(".hero"));
   const io = new IntersectionObserver((entries) => {
@@ -1159,7 +1136,6 @@ initGreeter();
 initTerminal();
 initModal();
 initScrollspy();
-// Background flourishes must never block the intro from dismissing.
 try { initNetworkGraph(); } catch (e) { console.error("network web failed:", e); }
 try { initTextFX(); } catch (e) { console.error("text fx failed:", e); }
 initIntro();
