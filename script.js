@@ -4,10 +4,10 @@ const tickerLines = [
   { text: "[FRAUDSENTRY] RandomForest 0.748 ROC-AUC, 649 of 4,064 held-out fraud cases caught at a 3% FPR budget", sev: "high" },
   { text: "[FRAUDSENTRY] 23.7-point subgroup false-positive-rate spread flagged in merchant-category fairness audit", sev: "high" },
   { text: "[GUARDDUTY] 10 findings auto-ticketed to Jira, 13 finding types mapped to MITRE ATT&CK", sev: "ok" },
-  { text: "[T-POT] 66,204 attacker sessions captured across Conpot/Cowrie honeypots", sev: "high" },
-  { text: "[SURICATA] 15,382 IDS alerts correlated in first 6h of deployment", sev: "high" },
+  { text: "[T-POT] 66,185 attacker events captured across Conpot/Cowrie honeypots in the first hour", sev: "high" },
+  { text: "[SURICATA] 15,315 IDS alerts raised in the first hour of deployment", sev: "high" },
   { text: "[MITRE ATT&CK] 4 techniques mapped: T1046, T1110, T1595, T1071", sev: "ok" },
-  { text: "[NESSUS] 27 findings scored via custom CVSS v3.0 engine, 8m scan window", sev: "high" },
+  { text: "[NESSUS] 25 findings scored via custom CVSS v3.0 engine, 8m scan window", sev: "high" },
   { text: "[S3-AUDITOR] public-read bucket flagged, CVSS 7.5, remediation logged", sev: "high" },
   { text: "[CLOUDTRAIL] 11 detection rules live across Lambda + DynamoDB", sev: "ok" },
   { text: "[ELK] 110+ events indexed, Kibana dashboard verified", sev: "ok" },
@@ -23,15 +23,15 @@ const tickerLines = [
   { text: "[RITA] 85.239.53.219 beacon score 0.504, rare_signature:SSLoad/1.1, mean interval 477s, 11 connections", sev: "high" },
   { text: "[ZEEK] 17 structured logs generated: conn.log, dns.log, ssl.log, kerberos.log, ldap.log confirmed", sev: "ok" },
   { text: "[OPENSCAP] Ubuntu 24.04 STIG V1R5 score 69.58% to 78.06% after 13 Ansible changes, 0 failures", sev: "ok" },
-  { text: "[POA&M] 7 findings open post-remediation, each keyed to a real DISA STIG rule ID", sev: "high" },
+  { text: "[POA&M] 7 findings open post-remediation, each keyed to a DISA STIG rule ID", sev: "high" },
   { text: "[OPA] 7/7 Rego policy tests passing, manager delete allowed, non-manager denied 403", sev: "ok" },
   { text: "[VAULT] delete-order AppRole credential minted, 20s TTL, rejected after expiry", sev: "ok" },
   { text: "[MTLS] tcpdump on ztlab-net shows TLS records only, no legible method, path or body", sev: "ok" },
   { text: "[SONARQUBE] SAST gate blocked on BLOCKER java:S6437 and CRITICAL java:S5547, cleared after removal", sev: "high" },
   { text: "[HELM] vulntrack chart deployed, backend/frontend/postgres pods running, 0 restarts", sev: "ok" },
   { text: "[BURP] 3 DAST findings on VulnTrack API: missing CSP, JWT enforced, SQLi on filters not exploitable", sev: "ok" },
-  { text: "[SLIVER C2] 7 ATT&CK techniques executed across full kill chain: T1204.002, T1071.001, T1547.001, T1134.001, T1003.002, T1550.002, T1041", sev: "high" },
-  { text: "[PYPYKATZ] 4 NTLM hashes extracted from SAM hive: Administrator, Guest, DefaultAccount, WDAGUtilityAccount, Victim", sev: "high" },
+  { text: "[SLIVER C2] 7 ATT&CK techniques executed across the kill chain: T1204.002, T1071.001, T1547.001, T1134.001, T1003.002, T1550.002, T1041", sev: "high" },
+  { text: "[PYPYKATZ] 5 accounts extracted from SAM hive: Administrator, Guest, DefaultAccount, WDAGUtilityAccount, Victim", sev: "high" },
   { text: "[IMPACKET] pass-the-hash SMB auth confirmed against 192.168.93.138, ADMIN$ C$ IPC$ shares enumerated", sev: "high" },
 ];
 
@@ -40,7 +40,7 @@ const projects = [
     id: "CASE-26",
     title: "Red Team C2 Lab: Sliver C2 Adversary Emulation",
     tags: ["Sliver C2", "MITRE ATT&CK", "Red Team", "impacket", "pypykatz", "VMware", "Adversary Emulation"],
-    desc: "Full adversary emulation lab running Sliver C2 v1.7.7 against a Windows 11 Enterprise victim on an isolated VMware NAT network. Executed 7 MITRE ATT&CK techniques: HTTPS beacon delivery (T1204.002), C2 comms on port 443 at a 60-second interval (T1071.001), registry run key persistence confirmed in regedit (T1547.001), token impersonation with SeImpersonatePrivilege confirmed (T1134.001), SAM and SYSTEM hive dump parsed with pypykatz yielding 4 NTLM hashes (T1003.002), pass-the-hash SMB authentication via impacket (T1550.002), and file exfiltration over the live C2 channel (T1041). Ships with 3 Sigma detection rules, an ATT&CK Navigator layer, and a structured red team report.",
+    desc: "Sliver C2 v1.7.7 run against a Windows 11 Enterprise victim on an isolated VMware NAT network, covering 7 MITRE ATT&CK techniques. The chain started with HTTPS beacon delivery (T1204.002) and C2 traffic on port 443 at a 60-second interval (T1071.001), then registry run key persistence confirmed in regedit (T1547.001) and token impersonation with SeImpersonatePrivilege (T1134.001). A SAM and SYSTEM hive dump parsed with pypykatz yielded 5 accounts (T1003.002), impacket carried pass-the-hash SMB authentication (T1550.002), and files left over the live C2 channel (T1041). On the detection side there are 3 Sigma rules, an ATT&CK Navigator layer, and a structured red team report.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/red-team-c2-lab",
   },
@@ -48,7 +48,7 @@ const projects = [
     id: "CASE-25",
     title: "FraudSentry: Fraud Detection, SHAP Explainability + Fairness Audit",
     tags: ["Fraud Detection", "XGBoost", "SHAP", "scikit-learn", "Fairness Audit", "GDPR DPIA"],
-    desc: "End-to-end fraud detection pipeline on the real IEEE-CIS dataset, audited for bias and privacy rather than stopping at a model score. Engineered velocity, amount-deviation, geo-mismatch, and temporal features, then compared logistic regression, RandomForest, XGBoost, and IsolationForest on a time-based split. Scored on recall at a fixed 3% false-positive budget: RandomForest led at 0.748 ROC-AUC, catching 649 of 4,064 held-out fraud cases. SHAP ranked amount, hour_of_day, and electronics merchant category as top drivers. A fairness audit found a 23.7-point false-positive-rate spread across merchant categories. Ships with a SQLite case-management layer and a GDPR Article 35 DPIA.",
+    desc: "Fraud detection on the IEEE-CIS dataset, audited for bias and privacy as well as accuracy. Velocity, amount-deviation, geo-mismatch, and temporal features fed logistic regression, RandomForest, XGBoost, and IsolationForest, compared on a time-based split. Scored on recall at a fixed 3% false-positive budget, RandomForest led at 0.748 ROC-AUC and caught 649 of 4,064 held-out fraud cases. SHAP ranked amount, hour_of_day, and electronics merchant category as the top drivers, and a fairness audit found a 23.7-point false-positive-rate spread across merchant categories. A SQLite case-management layer and a GDPR Article 35 DPIA sit on top.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/fraudsentry",
   },
@@ -56,7 +56,7 @@ const projects = [
     id: "CASE-23",
     title: "VulnTrack: Full-Stack Vulnerability Management with a DevSecOps Pipeline",
     tags: ["Spring Boot", "React", "PostgreSQL", "JWT", "Jenkins", "SonarQube", "SAST", "Kubernetes", "Helm", "Burp Suite", "DAST"],
-    desc: "Full-stack vulnerability management app carried through a complete DevSecOps pipeline. Spring Boot 4 REST API on Java 21 with PostgreSQL, Flyway migrations, and JWT authentication, plus a React and TypeScript dashboard with severity color-coding and filters. A 7-stage Jenkins pipeline's SonarQube SAST gate was validated against injected defects, failing on a BLOCKER java:S6437 and a CRITICAL java:S5547 and passing once both were removed. Deployed to Kubernetes with a Helm chart, all 3 pods running with 0 restarts. Manual Burp Suite DAST produced 3 documented findings: a missing CSP header, JWT enforcement confirmed, and SQL injection on filters not exploitable.",
+    desc: "Vulnerability management app taken through a DevSecOps pipeline from commit to cluster. The backend is a Spring Boot 4 REST API on Java 21 with PostgreSQL, Flyway migrations, and JWT authentication; the React and TypeScript dashboard adds severity color-coding and filters. The SonarQube SAST gate in the 7-stage Jenkins pipeline was tested with injected defects: it failed on a BLOCKER java:S6437 and a CRITICAL java:S5547 and passed once both were removed. A Helm chart deploys it to Kubernetes, with all 3 pods running and 0 restarts. Manual Burp Suite DAST produced 3 documented findings: a missing CSP header, JWT enforcement confirmed, and SQL injection on filters not exploitable.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/vulntrack",
   },
@@ -64,7 +64,7 @@ const projects = [
     id: "CASE-22",
     title: "Zero Trust Test Bed: mTLS, OIDC, OPA + Just-in-Time Vault Credentials",
     tags: ["Zero Trust", "NIST SP 800-207", "mutual TLS", "Keycloak", "OIDC", "SAML 2.0", "Open Policy Agent", "Rego", "HashiCorp Vault", "Docker"],
-    desc: "A working zero trust test bed: 3 microservices where every request must clear 4 independent layers, and only the gateway publishes a port. Layer 1 is mutual TLS with lab-CA certificates on every service. Layer 2 is OIDC through Keycloak, returning 401 without a token. Layer 3 is Open Policy Agent deciding every request, with 7 of 7 Rego tests passing and a live 403 versus 200 split driven only by token roles. Layer 4 replaces standing privilege with Vault credentials on a 20 second TTL, rejected after expiry. tcpdump confirms encryption against a plaintext baseline, and every control maps to NIST SP 800-207.",
+    desc: "Every request to these 3 microservices must clear 4 independent layers, and only the gateway publishes a port. Layer 1 is mutual TLS with lab-CA certificates on every service. Layer 2 is OIDC through Keycloak, returning 401 without a token. Layer 3 is Open Policy Agent deciding every request, with 7 of 7 Rego tests passing and a live 403 versus 200 split driven only by token roles. Layer 4 replaces standing privilege with Vault credentials on a 20 second TTL, rejected after expiry. tcpdump confirms encryption against a plaintext baseline, and every control maps to NIST SP 800-207.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/zerotrust-lab",
   },
@@ -72,7 +72,7 @@ const projects = [
     id: "CASE-21",
     title: "FedRAMP RMF Compliance Lab: STIG Hardening, OpenSCAP + POA&M",
     tags: ["FedRAMP Moderate", "NIST 800-53 Rev 5", "DISA STIG V1R5", "OpenSCAP", "Ansible", "POA&M", "SSP", "SOX/COSO"],
-    desc: "Carried an Ubuntu 24.04 host through a full FedRAMP Moderate RMF cycle: assessment, automated remediation, reassessment, and the documentation package an assessor receives. Built SCAP content from ComplianceAsCode source, pinned to DISA STIG V1R5. The baseline OpenSCAP run scored 69.58%; an Ansible playbook generated from the same profile applied 13 changes with 0 failures, raising the score to 78.06%. The 7 residual findings are tracked in a POA&M keyed to real STIG rule IDs. Ships with an SSP summary across all 20 NIST 800-53 Rev 5 families, a 52-control FedRAMP matrix, and a SOX/COSO access certification.",
+    desc: "Took an Ubuntu 24.04 host through a FedRAMP Moderate RMF cycle: assessment, automated remediation, reassessment, and the documentation package an assessor receives. The SCAP content was built from ComplianceAsCode source and pinned to DISA STIG V1R5. The baseline OpenSCAP run scored 69.58%. An Ansible playbook generated from the same profile applied 13 changes with 0 failures and raised the score to 78.06%. The 7 residual findings are tracked in a POA&M keyed to DISA STIG rule IDs, alongside an SSP summary across all 20 NIST 800-53 Rev 5 families, a 52-control FedRAMP matrix, and a SOX/COSO access certification.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/fedramp-rmf-lab",
   },
@@ -88,7 +88,7 @@ const projects = [
     id: "CASE-19",
     title: "Authorized Penetration Test, Metasploit Lab",
     tags: ["Metasploit Framework", "Nmap", "Kali Linux", "Penetration Testing", "CVSS", "MITRE ATT&CK"],
-    desc: "Conducted an authorized penetration test against two intentionally vulnerable lab environments (Metasploitable2 self-hosted, TryHackMe Blue). Performed full reconnaissance with Nmap across all 65,535 ports, identifying vsftpd 2.3.4, Samba 3.0.20, rexec, and unpatched SMBv1. Exploited CVE-2011-2523 (vsftpd backdoor, root shell via malicious username), CVE-2007-2447 (Samba usermap_script command injection, root shell), cleartext rexec authentication service (port 512), and CVE-2017-0144 EternalBlue (SMBv1 buffer overflow, NT AUTHORITY\\SYSTEM). All 4 exploits executed using Metasploit Framework. Documented findings in a structured pentest report with CVSS v3 scoring, MITRE ATT&CK mapping (T1190, T1210, T1021), reproduction steps, business impact analysis, and remediation recommendations.",
+    desc: "Authorized penetration test against two intentionally vulnerable lab environments (Metasploitable2 self-hosted, TryHackMe Blue). Nmap reconnaissance across all 65,535 ports turned up vsftpd 2.3.4, Samba 3.0.20, rexec, and unpatched SMBv1. Exploited with the Metasploit Framework: CVE-2011-2523 (vsftpd backdoor, root shell via malicious username), CVE-2007-2447 (Samba usermap_script command injection, root shell), the cleartext rexec authentication service (port 512), and CVE-2017-0144 EternalBlue (SMBv1 buffer overflow, NT AUTHORITY\\SYSTEM). The pentest report scores all 4 findings with CVSS v3, maps them to MITRE ATT&CK (T1190, T1210, T1021), and gives reproduction steps, business impact, and remediation recommendations.",
     date: "Aug 2026",
     link: "https://github.com/ronankongala/metasploit-pentest-report",
   },
@@ -104,7 +104,7 @@ const projects = [
     id: "CASE-17",
     title: "Zeek Network Forensics + Beacon Detection",
     tags: ["Zeek", "RITA", "Jupyter", "Beacon Detection", "Network Forensics", "Cobalt Strike"],
-    desc: "End-to-end network forensics lab detecting SSLoad and Cobalt Strike C2 beaconing from a real malware PCAP. Ran Zeek 8.2.1 against a 6.4MB PCAP to generate 17 structured logs including conn.log, dns.log, ssl.log, kerberos.log, and ldap.log. RITA v5.1.2 scored all external connections for beacon regularity, auto-tagging 85.239.53.219 with rare_signature:SSLoad/1.1 (beacon score 0.504, 11 connections, 5,087s total duration, mean interval 477 seconds). Built 3 Jupyter threat hunting notebooks: conn.log duration analysis, DNS query profiling, and beacon interval visualization. Mapped findings to 6 MITRE ATT&CK techniques (T1071, T1071.004, T1008, T1095, T1557, T1018) with a full IOC table and 2 Sigma detection rules in the investigation report PDF.",
+    desc: "85.239.53.219 beaconed every 477 seconds on average, and Zeek and RITA found it in an SSLoad and Cobalt Strike malware PCAP. Zeek 8.2.1 turned the 6.4MB capture into 17 structured logs, including conn.log, dns.log, ssl.log, kerberos.log, and ldap.log. RITA v5.1.2 scored every external connection for beacon regularity and auto-tagged the host with rare_signature:SSLoad/1.1 (beacon score 0.504, 11 connections, 5,087s total duration). Three Jupyter threat hunting notebooks cover conn.log duration analysis, DNS query profiling, and beacon interval visualization. The investigation report PDF maps the findings to 6 MITRE ATT&CK techniques (T1071, T1071.004, T1008, T1095, T1557, T1018) with an IOC table and 2 Sigma detection rules.",
     date: "Aug 2026",
     link: "https://github.com/ronankongala/zeek-network-forensics-lab",
   },
@@ -112,7 +112,7 @@ const projects = [
     id: "CASE-16",
     title: "Malware Analysis Lab: AgentTesla Static, Dynamic + Memory Forensics",
     tags: ["PEStudio", "CAPA", "Ghidra", "YARA", "CAPE Sandbox", "Any.run", "Volatility 3", "Malware Analysis"],
-    desc: "End-to-end malware analysis of a real AgentTesla credential stealer across 6 phases on an isolated FlareVM + REMnux lab. Static: PEStudio found 5 imports and entropy 6.454; CAPA mapped T1027 XOR x16 and T1497 anti-sandbox evasion; Ghidra confirmed MurmurHash API hashing at FUN_1400015a0, seed 0xa7e8bf08. Wrote 3 YARA rules from extracted indicators with zero false positives against System32. Dynamic: Any.run sandbox confirmed Stealc/Vidar stealer behavior, 87 IOCs, 32 dropped files targeting Chrome/Edge credential stores, 11 MITRE ATT&CK techniques. Memory: winpmem v4.0-rc1 acquired a 7GB live dump; Volatility 3 windows.malfind detected PAGE_EXECUTE_READWRITE code injection in SearchApp.exe (PID 6656) and powershell.exe (PID 7848).",
+    desc: "Six-phase teardown of an AgentTesla credential stealer on an isolated FlareVM + REMnux lab. Static: PEStudio found 5 imports and entropy 6.454; CAPA mapped T1027 XOR x16 and T1497 anti-sandbox evasion; Ghidra confirmed MurmurHash API hashing at FUN_1400015a0, seed 0xa7e8bf08. Three YARA rules written from the extracted indicators had zero false positives against System32. Dynamic: the Any.run run produced 87 IOCs, 32 dropped files targeting Chrome/Edge credential stores, and 11 MITRE ATT&CK techniques, and the sandbox verdict also tagged Stealc/Vidar. Memory: winpmem v4.0-rc1 acquired a 7GB live dump; Volatility 3 windows.malfind detected PAGE_EXECUTE_READWRITE code injection in SearchApp.exe (PID 6656) and powershell.exe (PID 7848).",
     date: "Aug 2026",
     link: "https://github.com/ronankongala/malware-analysis-lab",
   },
@@ -120,7 +120,7 @@ const projects = [
     id: "CASE-15",
     title: "AppSec Pipeline + Secrets Management Lab",
     tags: ["Semgrep", "Checkov", "Trivy", "OWASP ZAP", "Vault", "Okta", "Terraform", "GitHub Actions", "PCI-DSS"],
-    desc: "Wrapped OWASP WebGoat (a deliberately vulnerable Java app) with a 3-gate CI/CD security pipeline: Semgrep SAST surfaced 66 findings across 1,002 files, Checkov flagged 3 Dockerfile misconfigurations with Prisma Cloud policy IDs, and Trivy identified 71 CVEs in the container image. OWASP ZAP active scan (961 requests) found 8 vulnerability categories including missing CSRF protections. Migrated app credentials from hardcoded config into HashiCorp Vault's KV engine with secret rotation demo (v1 → v2). Configured Okta OIDC SSO with MFA enforcement via Okta Verify. Mapped the full environment against 16 PCI-DSS 4.0 requirements with an accepted risk register.",
+    desc: "Wrapped OWASP WebGoat (a deliberately vulnerable Java app) with a 3-gate CI/CD security pipeline: Semgrep SAST surfaced 66 findings across 1,002 files, Checkov flagged 3 Dockerfile misconfigurations with Prisma Cloud policy IDs, and Trivy identified 71 CVEs in the container image. OWASP ZAP active scan (961 requests) found 8 vulnerability categories including missing CSRF protections. Migrated app credentials from hardcoded config into HashiCorp Vault's KV engine with secret rotation demo (v1 → v2). Configured Okta OIDC SSO with MFA enforcement via Okta Verify. Mapped the environment against 16 PCI-DSS 4.0 requirements with an accepted risk register.",
     date: "Aug 2026",
     link: "https://github.com/ronankongala/Appsec-pipeline-lab",
   },
@@ -128,7 +128,7 @@ const projects = [
     id: "CASE-14",
     title: "Access-Governed RAG Console (LLM Access Control)",
     tags: ["RAG", "LLM Security", "Entra ID", "RBAC", "Flask", "Azure"],
-    desc: "Built a retrieval-augmented AI assistant that enforces role-based access control at the retrieval layer, so a restricted document is excluded from an unauthorized user's candidate set before the model ever sees it, rather than trusting the model to keep a secret. Wired real Microsoft Entra ID (OAuth2) sign-in with app-role claims mapped to backend RBAC, added a prompt-injection scanner validated by a 10-case attack battery (10/10 resisted), and logged every access decision to an audit trail. Deployed to Azure App Service, with a README section documenting the honest gaps a production version would still need.",
+    desc: "Retrieval-augmented AI assistant that enforces role-based access control at the retrieval layer. A restricted document is dropped from an unauthorized user's candidate set before the model sees it, so the model is never trusted to keep a secret. Microsoft Entra ID (OAuth2) sign-in maps app-role claims to backend RBAC, a prompt-injection scanner resisted all 10 cases in an attack battery, and every access decision goes to an audit trail. It runs on Azure App Service, and the README lists what a production version would still need.",
     date: "Jul 2026",
     link: "https://github.com/ronankongala/Access-governed-rag-console",
   },
@@ -136,7 +136,7 @@ const projects = [
     id: "CASE-13",
     title: "NIST 800-171 / CMMC Compliance Baseline Lab",
     tags: ["Active Directory", "Microsoft Intune", "Entra ID", "NIST 800-171", "CMMC"],
-    desc: "Built a hands-on lab simulating the environment a small defense contractor would run: Windows Server 2022 Active Directory with GPO-enforced password and lockout policies, Microsoft Intune device compliance, Entra ID Conditional Access in report-only mode, and Windows Defender Firewall rules restricting SMB and blocking outbound Telnet. Mapped every control to NIST 800-171 requirements in a documented System Security Plan and CMMC Level 2 self-assessment scorecard, with two real gaps (FIPS-validated cryptography, periodic vulnerability scanning) transparently flagged as next steps rather than hidden.",
+    desc: "Lab environment modeled on what a small defense contractor would run: Windows Server 2022 Active Directory with GPO-enforced password and lockout policies, Microsoft Intune device compliance, Entra ID Conditional Access in report-only mode, and Windows Defender Firewall rules restricting SMB and blocking outbound Telnet. Each control maps to a NIST 800-171 requirement in a System Security Plan and a CMMC Level 2 self-assessment scorecard. Two gaps (FIPS-validated cryptography, periodic vulnerability scanning) are flagged as next steps.",
     date: "Jul 2026",
     link: "https://github.com/ronankongala/nist-cmmc-compliance-lab",
   },
@@ -144,8 +144,8 @@ const projects = [
     id: "CASE-12",
     title: "Kali SSH MCP",
     tags: ["MCP", "Kali Linux", "SSH", "Open Source"],
-    desc: "A bridge between Kali Linux and the Model Context Protocol over SSH, letting an AI assistant interact directly with a Kali environment for security research and pen-testing workflows.",
-    date: "2025 \u2013 present",
+    desc: "Lets Claude Desktop run commands in a Kali Linux terminal over SSH through the Model Context Protocol, so an AI assistant can work directly in a Kali environment for security research and pen-testing workflows.",
+    date: "2025 to Present",
     link: "https://github.com/ronankongala/kali-ssh-mcp",
   },
   {
@@ -160,7 +160,7 @@ const projects = [
     id: "CASE-10",
     title: "Agentic GRC Analyst",
     tags: ["In progress", "LLM", "Control mapping"],
-    desc: "An in-progress assistant for mapping controls across overlapping frameworks, NIST, PCI DSS, and GDPR, and flagging coverage gaps automatically.",
+    desc: "An in-progress assistant for mapping controls across overlapping frameworks (NIST, PCI DSS, GDPR) and flagging coverage gaps automatically.",
     date: "In progress",
     link: "https://github.com/ronankongala",
   },
@@ -168,7 +168,7 @@ const projects = [
     id: "CASE-09",
     title: "Nessus Vulnerability Management Pipeline",
     tags: ["Nessus", "PowerShell", "Python", "CVSS v3.0"],
-    desc: "Built a vulnerability assessment pipeline on Nessus Essentials with a custom PowerShell/Python risk-scoring engine, scanning and analyzing 25+ vulnerabilities within an 8-minute window. A custom weighting algorithm (CVSS score, severity, blast radius) ranked remediation order, mapped to NIST CSF, ISO 27001, and PCI DSS.",
+    desc: "Nessus Essentials scan pipeline with a custom PowerShell/Python risk-scoring engine. An 8-minute scan window surfaced 25 vulnerabilities, and a custom weighting algorithm (CVSS score, severity, blast radius) ranked the remediation order, mapped to NIST CSF, ISO 27001, and PCI DSS.",
     date: "Jul 2026",
     link: "https://github.com/ronankongala/nessus-vulnerability-pipeline",
   },
@@ -176,7 +176,7 @@ const projects = [
     id: "CASE-08",
     title: "Cloud OT Honeypot with SIEM Integration",
     tags: ["GCP", "T-Pot", "Suricata", "Splunk Cloud"],
-    desc: "Deployed an internet-facing OT honeypot on GCP using T-Pot, Conpot, and Cowrie to emulate Modbus, DNP3, and Telnet/SSH industrial services, capturing 66,000+ real attacker events within the first hour. Suricata IDS and Splunk Cloud SIEM ingested the telemetry, flagging 15,000+ intrusion alerts and mapping attacker behavior to 4 MITRE ATT&CK techniques.",
+    desc: "Internet-facing OT honeypot on GCP, with T-Pot, Conpot, and Cowrie emulating Modbus, DNP3, and Telnet/SSH industrial services. It captured 66,185 attacker events in the first hour. Suricata IDS raised 15,315 alerts over the same hour, and Splunk Cloud SIEM ingested the telemetry and mapped attacker behavior to 4 MITRE ATT&CK techniques.",
     date: "Jul 2026",
     link: "https://github.com/ronankongala/ot-honeypot-gcp",
   },
@@ -184,7 +184,7 @@ const projects = [
     id: "CASE-07",
     title: "S3 Security Auditor",
     tags: ["Python", "boto3", "AWS S3"],
-    desc: "Built a Python auditing tool using boto3 to scan AWS S3 buckets for misconfigurations, running 6 checks per bucket across public ACLs, encryption, versioning, and logging. Scanned 2 buckets, identified 3 medium-severity findings, and produced a structured JSON risk report.",
+    desc: "Python (boto3) tool that audits AWS S3 buckets for misconfigurations, running 6 checks per bucket across public ACLs, encryption, versioning, and logging. A scan of 2 buckets turned up 3 medium-severity findings, written to a structured JSON risk report.",
     date: "Jun 2026",
     link: "https://github.com/ronankongala/s3-security-auditor",
   },
@@ -200,7 +200,7 @@ const projects = [
     id: "CASE-05",
     title: "AWS CloudTrail Threat Detection Pipeline",
     tags: ["AWS Lambda", "S3", "SNS", "DynamoDB"],
-    desc: "Engineered a serverless AWS threat detection pipeline using CloudTrail, Lambda (Python 3.12), S3, SNS, and DynamoDB, implementing 11 detection rules mapped to MITRE ATT&CK across Defense Evasion, Privilege Escalation, and Credential Access. Real-time IAM alerting ran at a 100% Lambda execution success rate.",
+    desc: "Serverless AWS threat detection on CloudTrail, Lambda (Python 3.12), S3, SNS, and DynamoDB. Eleven detection rules map to MITRE ATT&CK across Defense Evasion, Privilege Escalation, and Credential Access, and IAM alerting ran at a 100% Lambda execution success rate.",
     date: "Jun 2026",
     link: "https://github.com/ronankongala/aws-cloudtrail-threat-detector",
   },
@@ -208,7 +208,7 @@ const projects = [
     id: "CASE-04",
     title: "Agentic Cybersecurity Analyst",
     tags: ["Claude", "Microsoft Sentinel", "KQL"],
-    desc: "Built an LLM-driven SOC analyst that queries Microsoft Sentinel via KQL across Azure Log Analytics, triaging alerts and drafting incident summaries for human review.",
+    desc: "LLM-driven SOC analyst built on Claude. It queries Microsoft Sentinel via KQL across Azure Log Analytics, triages alerts, maps them to MITRE ATT&CK, and drafts incident summaries for human review.",
     date: "Apr 2026",
     link: "https://github.com/ronankongala/agentic-soc-sentinel",
   },
@@ -216,7 +216,7 @@ const projects = [
     id: "CASE-03",
     title: "SOC 2 Type I Audit, GRC Portfolio",
     tags: ["SOC 2", "NIST", "Risk Register"],
-    desc: "Ran a mock SOC 2 Type I audit assessing 14 controls end to end, producing 6 remediation recommendations backed by a documented risk register and audit evidence trail.",
+    desc: "Mock SOC 2 Type I audit of my SOC automation lab against the CC6, CC7, and A1 trust service criteria. It ended in 6 findings with remediation recommendations, backed by a documented risk register and audit evidence trail.",
     date: "Apr 2026",
     link: "https://github.com/ronankongala/SOC2-Audit-Lab",
   },
@@ -224,8 +224,8 @@ const projects = [
     id: "CASE-02",
     title: "SOC Security Solution Deployment",
     tags: ["Splunk", "SIEM", "Automation"],
-    desc: "Deployed a Splunk SIEM lab monitoring 1,000+ daily security events, automating 15 incident response playbooks and cutting mean time to detect from 45 to 12 minutes, a 73% improvement.",
-    date: "Aug \u2013 Oct 2025",
+    desc: "Windows event logs flow into Splunk, n8n hands each alert to OpenAI GPT-4 for analysis, and the verdict posts to Slack in under 60 seconds. Tested end to end on failed-logon events.",
+    date: "Aug 2025 to Oct 2025",
     link: "https://github.com/ronankongala/SOC-Automation-Lab",
   },
   {
@@ -233,30 +233,34 @@ const projects = [
     title: "Fake Job Posting Detection (IEEE ICAISS 2025)",
     tags: ["Ensemble ML", "SMOTE", "Research"],
     desc: "First-author research using an ensemble of Random Forest, Gradient Boosting, XGBoost, and AdaBoost with SMOTE, reaching 98% accuracy across 9,000+ job postings and a 22% false positive reduction.",
-    date: "Jun 2024 \u2013 Feb 2025",
+    date: "Jun 2024 to Feb 2025",
     link: "https://github.com/ronankongala/Fake-Job-Posting-Detection",
   },
 ];
 
 // Derived from the projects array so these never drift when a case is added.
 const caseCount = projects.length;
-const caseRange = `open [1-${caseCount}]`;
+const caseNumber = p => Number(p.id.replace("CASE-", ""));
+const maxCase = Math.max(...projects.map(caseNumber));
+const caseRange = `open [1-${maxCase}]`;
+const projectsTitle = document.getElementById("projectsTitle");
+if (projectsTitle) projectsTitle.textContent = `${caseCount} builds, from honeypots to malware forensics`;
 
 const experience = [
   {
-    date: "Sep 2026 - Present",
+    date: "Sep 2026 to Present",
     role: "AI Cybersecurity Intern",
     org: "Abbott &middot; Madison, WI (Hybrid)",
-    desc: "Contributing to ExmanIq, an internal vulnerability management platform monitoring 22,000+ tracked vulnerabilities across organizational assets using a predictive Impact x Likelihood risk model enriched with EPSS and NVD threat intelligence. Diagnosed a 27-day silent data-pipeline failure by recognizing an anomalous flat trend in the platform's composite risk score. Also built CrowdCheck Hive with a teammate, correlating CrowdStrike, Microsoft Intune, and ServiceNow CMDB data to identify device coverage gaps across the organization's endpoint security controls.",
+    desc: "Contributing to ExmanIq, an internal vulnerability management platform that tracks 22,000+ vulnerabilities across organizational assets with a predictive Impact x Likelihood risk model enriched with EPSS and NVD threat intelligence. Diagnosed a 27-day silent data-pipeline failure after spotting an anomalous flat trend in the platform's composite risk score. With a teammate, also built CrowdCheck Hive, which pulls CrowdStrike, Microsoft Intune, and ServiceNow CMDB data together to find devices missing endpoint security coverage.",
   },
   {
-    date: "Jun 2026 - Sep 2026",
+    date: "Jun 2026 to Sep 2026",
     role: "Cybersecurity Intern",
     org: "Exact Sciences &middot; Madison, WI (Hybrid)",
-    desc: "Built Baseline Guardian with a teammate, correlating data across multiple internal systems (CrowdStrike, Microsoft Intune, Tanium, ServiceNow CMDB) to assess security posture and endpoint compliance. Automated KeyCheck, a credential-risk monitoring pipeline scanning 1,300+ application registrations to identify expiring-credential risk before it became an incident.",
+    desc: "Automated KeyCheck, a credential-risk monitoring pipeline that scans 1,300+ application registrations for expiring credentials before they cause an incident. Co-built Baseline Guardian, an endpoint compliance check that compares CrowdStrike, Microsoft Intune, Tanium, and ServiceNow CMDB records to assess security posture.",
   },
   {
-    date: "Jan 2026 - Apr 2026",
+    date: "Jan 2026 to Apr 2026",
     role: "Teaching Assistant, CY5001",
     org: "Northeastern University, Khoury College",
     desc: "Ran lab sessions and graded 200+ assignments for 61 graduate students in Cybersecurity Threats and Defenses, resolving 150+ Piazza queries within a 24-hour SLA and cutting lab completion time by 30%.",
@@ -268,22 +272,22 @@ const experience = [
     desc: "Published an ensemble ML approach (Random Forest, Gradient Boosting, XGBoost, AdaBoost with SMOTE) reaching 98% accuracy across 9,000+ postings.",
   },
   {
-    date: "Aug 2024 - Oct 2024",
+    date: "Aug 2024 to Oct 2024",
     role: "Cybersecurity Intern",
     org: "NIELIT Virtual Academy, Ministry of Electronics and IT",
-    desc: "Conducted network security assessments across 3 live environments, applying threat modeling with Nmap and Docker, and used Random Forest models to detect anomalies in security data.",
+    desc: "Assessed network security across 3 live environments with Nmap and Docker, and used Random Forest models to detect anomalies in security data.",
   },
   {
-    date: "Feb 2024 - Apr 2024",
+    date: "Feb 2024 to Apr 2024",
     role: "Web Development Trainee",
     org: "Quizaro ExtendedEdge &middot; Remote",
-    desc: "Completed an ISO 9001:2015 certified specialization covering frontend architecture and modern web technologies.",
+    desc: "Completed an ISO 9001:2015 certified specialization in frontend architecture and web technologies.",
   },
   {
-    date: "Oct 2023 - Nov 2023",
+    date: "Oct 2023 to Nov 2023",
     role: "Data Science Analyst Intern",
     org: "Rejolt Edtech Pvt Ltd &middot; Hyderabad, India",
-    desc: "Built and automated data extraction pipelines with Python (NumPy, Pandas, scikit-learn) to streamline client reporting workflows.",
+    desc: "Automated data extraction pipelines for client reporting with Python (NumPy, Pandas, scikit-learn).",
   },
 ];
 
@@ -620,8 +624,8 @@ const terminalCommands = {
   about: () => "MS Cybersecurity @ Northeastern (GPA 3.86). AI Cybersecurity Intern @ Abbott. Focused on detection engineering, malware analysis, cloud security, and GRC.",
   whoami: () => "ronan-kongala &middot; cybersecurity engineer &middot; open to Summer and Fall 2027 roles",
   projects: () => `${caseCount} cases logged. Type <span class="thl">${caseRange}</span> for a case, or scroll to Project Log.`,
-  experience: () => "Abbott (AI Cybersecurity Intern), Exact Sciences, Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. See Experience section for the full timeline.",
-  stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Zeek, RITA, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. Full breakdown in the Stack section.",
+  experience: () => "Abbott (AI Cybersecurity Intern), Exact Sciences, Northeastern TA (CY5001), NIELIT Virtual Academy, IEEE ICAISS 2025 first author. The Experience section has the timeline.",
+  stack: () => "PEStudio, CAPA, Ghidra, YARA, Volatility 3, Zeek, RITA, Splunk, Sentinel/KQL, Suricata, ELK, AWS, GCP, Docker, Kali, Python. The Stack section has the breakdown.",
   contact: () => "kongalaronan@gmail.com &middot; linkedin.com/in/ronan-kongala &middot; github.com/ronankongala",
   sudo: () => "Nice try. Access denied: this terminal only reads public data.",
 };
@@ -638,12 +642,12 @@ function runCommand(raw, body) {
 
   const openMatch = cmd.match(/^open\s+(\d+)/i);
   if (openMatch) {
-    const idx = Number(openMatch[1]) - 1;
-    if (projects[idx]) {
-      openModal(projects[idx]);
-      tprint(body, `Opening ${projects[idx].id}: ${projects[idx].title}...`);
+    const match = projects.find(p => caseNumber(p) === Number(openMatch[1]));
+    if (match) {
+      openModal(match);
+      tprint(body, `Opening ${match.id}: ${match.title}...`);
     } else {
-      tprint(body, `No case with that number. Try open 1 through open ${caseCount}.`, "terr");
+      tprint(body, `No case with that number. Try a number from open 1 to open ${maxCase}.`, "terr");
     }
     return;
   }
@@ -671,7 +675,7 @@ function initTerminal() {
     if (!target) return;
     const cmd = target.textContent.trim();
     if (cmd === caseRange) {
-      runCommand("open 1", body);
+      runCommand(`open ${maxCase}`, body);
     } else {
       runCommand(cmd, body);
     }

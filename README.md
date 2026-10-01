@@ -1,27 +1,26 @@
 # ronankongala.github.io
 
-My personal cybersecurity portfolio, built from scratch with vanilla HTML, CSS, and JavaScript. No frameworks, no build step, just static files served directly from GitHub Pages.
+My personal cybersecurity portfolio, built from scratch with vanilla HTML, CSS, and JavaScript and served as static files from GitHub Pages.
 
 **Live site:** [ronankongala.github.io](https://ronankongala.github.io)
 
 ## About
 
-I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, currently an AI Cybersecurity Intern at Abbott, following a Cybersecurity Intern co-op at Exact Sciences. This site is a running log of the security engineering work I've built, detection pipelines, cloud honeypots, GRC audits, LLM security, fraud detection and model fairness, and a few side projects, styled like a field notebook / case log rather than a generic template.
+I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, currently an AI Cybersecurity Intern at Abbott, following a Cybersecurity Intern co-op at Exact Sciences. This site is a running log of my security engineering work, styled like a field notebook or case log. It covers detection pipelines, cloud honeypots, GRC audits, LLM security, red team emulation, and fraud detection with model fairness, plus a few side projects.
 
 ## Features
 
-- **Animated intro sequence** -- a short terminal-style boot log plays on load
-- **Typewriter hero** -- name types in letter by letter, synced with a short avatar video introduction
-- **Live signal-graph background** -- an animated node network rendered on canvas, no libraries. Nodes drift, link to their nearest neighbours, lean toward the cursor, and stay clear of the headline and photo
-- **Interactive terminal** -- type real commands (`help`, `projects`, `open 1-24`, `whoami`, `contact`, `clear`) to navigate the site
-- **Filterable project grid** -- 24 case studies (CASE-01 through CASE-23 plus CASE-25), click any tag to filter, click a card for the full write-up in a modal
-- **Scrolling signal-log ticker** -- real stats pulled from my own projects (attacker sessions captured, IDS alerts correlated, CVSS scores, etc.)
-- **Animated skill meters**, staggered scroll reveals, smooth page transitions
-- **Fully responsive**, respects `prefers-reduced-motion`, keyboard accessible
+- A short terminal-style boot log plays on load.
+- The hero name types in letter by letter, synced with a short avatar video introduction.
+- The background is a signal graph drawn on canvas with no libraries. Nodes drift, link to their nearest neighbours, lean toward the cursor, and stay clear of the headline and photo.
+- An interactive terminal takes `help`, `about`, `projects`, `experience`, `stack`, `contact`, `whoami` and `clear`. `open N` opens the modal for CASE-N, so `open 26` shows the red team lab; a number with no case (such as 24) prints an error.
+- The project grid holds 25 case studies (CASE-01 through CASE-23, plus CASE-25 and CASE-26). Click a tag to filter, or a card to read the write-up in a modal.
+- A scrolling ticker shows stats from my projects (honeypot events captured, IDS alerts, CVSS scores and more).
+- Skill meters animate in, sections reveal on scroll, and the layout is responsive, keyboard accessible and respects `prefers-reduced-motion`.
 
 ## Tech stack
 
-Plain HTML5, CSS3 (custom properties, Grid, Flexbox), and vanilla JavaScript (ES6+). No build tools, no dependencies, no `npm install` required, clone it and open `index.html`.
+Plain HTML5, CSS3 (custom properties, Grid, Flexbox), and vanilla JavaScript (ES6+), with no dependencies.
 
 Fonts: Space Grotesk, IBM Plex Sans, IBM Plex Mono via Google Fonts.
 
@@ -32,7 +31,7 @@ Fonts: Space Grotesk, IBM Plex Sans, IBM Plex Mono via Google Fonts.
 ├── styles.css          # all styling and design tokens
 ├── script.js           # terminal, filters, animations, case data
 ├── favicon.svg         # RK wordmark
-├── social-card.jpg     # 1200x630 og:image for link previews
+├── social-card-v3.jpg  # 2400x1260 og:image for link previews
 ├── avatar-poster.jpg   # video poster frame
 ├── Avatar video.mp4    # hero greeting clip
 └── Avatar image.png    # full-size source for the poster, not served to visitors
@@ -40,7 +39,7 @@ Fonts: Space Grotesk, IBM Plex Sans, IBM Plex Mono via Google Fonts.
 
 ## Running locally
 
-No build step needed:
+There is no build step or `npm install`. Clone the repo and serve it:
 
 ```
 git clone https://github.com/ronankongala/ronankongala.github.io.git
@@ -60,4 +59,4 @@ Hosted on GitHub Pages, served directly from the `main` branch. Any push to `mai
 - LinkedIn: linkedin.com/in/ronan-kongala
 - GitHub: github.com/ronankongala
 
-Open to Summer/Fall 2027 opportunities in SOC/detection engineering, cloud security, GRC, vulnerability management, and AI/LLM security.
+Open to Summer and Fall 2027 roles in SOC and detection engineering, malware analysis, cloud security, vulnerability management, GRC, and AI/LLM security.
