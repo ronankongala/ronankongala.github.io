@@ -13,8 +13,8 @@ I'm an MS Cybersecurity candidate at Northeastern University's Khoury College, c
 - A short terminal-style boot log plays on load.
 - The hero name types in letter by letter, synced with a short avatar video introduction.
 - The background is a signal graph drawn on canvas with no libraries. Nodes drift, link to their nearest neighbours, lean toward the cursor, and stay clear of the headline and photo.
-- An interactive terminal takes `help`, `about`, `projects`, `experience`, `stack`, `contact`, `whoami` and `clear`. `open N` opens the modal for CASE-N, so `open 26` shows the red team lab; a number with no case (such as 24) prints an error.
-- The project grid holds 25 case studies (CASE-01 through CASE-23, plus CASE-25 and CASE-26). Click a tag to filter, or a card to read the write-up in a modal.
+- An interactive terminal takes `help`, `about`, `projects`, `experience`, `stack`, `contact`, `whoami` and `clear`. `open N` opens the modal for CASE-N, so `open 24` shows the red team lab; a number with no case (such as 25) prints an error.
+- The project grid holds 24 case studies (CASE-01 through CASE-24). Click a tag to filter, or a card to read the write-up in a modal.
 - A scrolling ticker shows stats from my projects (honeypot events captured, IDS alerts, CVSS scores and more).
 - Skill meters animate in, sections reveal on scroll, and the layout is responsive, keyboard accessible and respects `prefers-reduced-motion`.
 

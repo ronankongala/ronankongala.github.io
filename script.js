@@ -37,20 +37,12 @@ const tickerLines = [
 
 const projects = [
   {
-    id: "CASE-26",
+    id: "CASE-24",
     title: "Red Team C2 Lab: Sliver C2 Adversary Emulation",
     tags: ["Sliver C2", "MITRE ATT&CK", "Red Team", "impacket", "pypykatz", "VMware", "Adversary Emulation"],
     desc: "Sliver C2 v1.7.7 run against a Windows 11 Enterprise victim on an isolated VMware NAT network, covering 7 MITRE ATT&CK techniques. The chain started with HTTPS beacon delivery (T1204.002) and C2 traffic on port 443 at a 60-second interval (T1071.001), then registry run key persistence confirmed in regedit (T1547.001) and token impersonation with SeImpersonatePrivilege (T1134.001). A SAM and SYSTEM hive dump parsed with pypykatz yielded 5 accounts (T1003.002), impacket carried pass-the-hash SMB authentication (T1550.002), and files left over the live C2 channel (T1041). On the detection side there are 3 Sigma rules, an ATT&CK Navigator layer, and a structured red team report.",
     date: "Sep 2026",
     link: "https://github.com/ronankongala/red-team-c2-lab",
-  },
-  {
-    id: "CASE-25",
-    title: "FraudSentry: Fraud Detection, SHAP Explainability + Fairness Audit",
-    tags: ["Fraud Detection", "XGBoost", "SHAP", "scikit-learn", "Fairness Audit", "GDPR DPIA"],
-    desc: "Fraud detection on the IEEE-CIS dataset, audited for bias and privacy as well as accuracy. Velocity, amount-deviation, geo-mismatch, and temporal features fed logistic regression, RandomForest, XGBoost, and IsolationForest, compared on a time-based split. Scored on recall at a fixed 3% false-positive budget, RandomForest led at 0.748 ROC-AUC and caught 649 of 4,064 held-out fraud cases. SHAP ranked amount, hour_of_day, and electronics merchant category as the top drivers, and a fairness audit found a 23.7-point false-positive-rate spread across merchant categories. A SQLite case-management layer and a GDPR Article 35 DPIA sit on top.",
-    date: "Sep 2026",
-    link: "https://github.com/ronankongala/fraudsentry",
   },
   {
     id: "CASE-23",
@@ -158,11 +150,11 @@ const projects = [
   },
   {
     id: "CASE-10",
-    title: "Agentic GRC Analyst",
-    tags: ["In progress", "LLM", "Control mapping"],
-    desc: "An in-progress assistant for mapping controls across overlapping frameworks (NIST, PCI DSS, GDPR) and flagging coverage gaps automatically.",
-    date: "In progress",
-    link: "https://github.com/ronankongala",
+    title: "FraudSentry: Fraud Detection, SHAP Explainability + Fairness Audit",
+    tags: ["Fraud Detection", "XGBoost", "SHAP", "scikit-learn", "Fairness Audit", "GDPR DPIA"],
+    desc: "Fraud detection on the IEEE-CIS dataset, audited for bias and privacy as well as accuracy. Velocity, amount-deviation, geo-mismatch, and temporal features fed logistic regression, RandomForest, XGBoost, and IsolationForest, compared on a time-based split. Scored on recall at a fixed 3% false-positive budget, RandomForest led at 0.748 ROC-AUC and caught 649 of 4,064 held-out fraud cases. SHAP ranked amount, hour_of_day, and electronics merchant category as the top drivers, and a fairness audit found a 23.7-point false-positive-rate spread across merchant categories. A SQLite case-management layer and a GDPR Article 35 DPIA sit on top.",
+    date: "Sep 2026",
+    link: "https://github.com/ronankongala/fraudsentry",
   },
   {
     id: "CASE-09",
