@@ -37,6 +37,14 @@ const tickerLines = [
 
 const projects = [
   {
+    id: "CASE-25",
+    title: "EC2 Vulnerability Lab",
+    tags: ["Terraform", "AWS EC2", "IAM", "VPC", "Systems Manager", "Inspector", "Security Hub", "AWS Config", "Service Control Policies", "Python (boto3, FastAPI)", "Amazon Linux 2023"],
+    desc: "An intentionally vulnerable AWS EC2 target built with Terraform. Nine cloud misconfigurations are found by a read-only scanner, then fixed through approval-gated rules with dry-run preview, rollback, and post-fix verification. Six of nine are closed; three need a rebuild or design change and stay open by design. Includes a local dashboard and an audit log. Compliance went from 0% at baseline to 66.7% after remediation, with 0 errors.",
+    date: "Oct 2026",
+    link: "https://github.com/ronankongala/ec2-vuln-lab",
+  },
+  {
     id: "CASE-24",
     title: "Red Team C2 Lab: Sliver C2 Adversary Emulation",
     tags: ["Sliver C2", "MITRE ATT&CK", "Red Team", "impacket", "pypykatz", "VMware", "Adversary Emulation"],
