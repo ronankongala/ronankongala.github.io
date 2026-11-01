@@ -37,6 +37,14 @@ const tickerLines = [
 
 const projects = [
   {
+    id: "CASE-26",
+    title: "Android Threat Engine: Ghera Benchmark Threat Models + APK Attack Surface Tool",
+    tags: ["Android", "Ghera", "apktool", "Python", "STRIDE", "LINDDUN", "CWE", "OWASP MASVS", "MASWE", "MASTG", "Mermaid", "pytest", "Android Emulator"],
+    desc: "An Android app security research project built on the Ghera benchmark repository (tag Jan2019, 57 benchmarks). It pairs 24 code-referenced threat models for the ICC and Web benchmarks, each using STRIDE, LINDDUN, attack trees and Mermaid diagrams, with standards mappings for the other 31 benchmarks, all keyed to CWE, OWASP MASVS v2, MASWE and MASTG. A ground truth dataset holds one row per benchmark, a drift matrix tracks each benchmark across API levels 22 to 34, and a benchmark issues log records 234 differences between the Ghera READMEs, code and tests. A command line tool decodes an APK with apktool, extracts exported components, intent filters and permissions, and writes findings with CWE IDs scored against the ground truth. A Step 1 emulator smoke test confirmed a broadcast receiver exploit fires against the Benign app and is blocked by the Secure app, with the Permission Denial captured in adb logcat.",
+    date: "Nov 2026",
+    link: "https://github.com/ronankongala/android-threat-model",
+  },
+  {
     id: "CASE-25",
     title: "EC2 Vulnerability Lab",
     tags: ["Terraform", "AWS EC2", "IAM", "VPC", "Systems Manager", "Inspector", "Security Hub", "AWS Config", "Service Control Policies", "Python (boto3, FastAPI)", "Amazon Linux 2023"],
